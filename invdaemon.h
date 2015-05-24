@@ -24,5 +24,6 @@
 #define __INVDAEMON_H
 
 void invdaemon();
+void* query_thread(void*);
 
 #endif

@@ -22,6 +22,8 @@
 
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
+#include <pthread.h>
 
 #include "config.h"
 #include "invdaemon.h"
@@ -57,5 +59,37 @@ int main(int argc, char** argv)
 
 void invdaemon()
 {
+    pthread_t pth;
+    pthread_attr_t attr;
+    int running = 0;
 
+    while(1) {
+        uiMessage(UI_DEBUG, "Interval");
+
+        if(running == 0) {
+            uiMessage(UI_DEBUG, "Running new query thread");
+            pthread_attr_init(&attr);
+            pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+            pthread_create(&pth, &attr, query_thread, (void*) &running);
+        }
+
+        sleep(conf->lgr_interval);
+    }
+}
+
+
+
+/**
+ * Main function for thread
+ */
+
+void* query_thread(void* args)
+{
+    int* running = (int*) args;
+    *running = 1;
+
+    // Query operations
+
+    *running = 0;
+    return NULL;
 }

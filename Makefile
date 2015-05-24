@@ -23,7 +23,7 @@ CC =		gcc
 STRIP =		strip
 
 CFLAGS =	-O2 -ggdb -Wall
-LDFLAGS =	
+LDFLAGS =	-pthread
 STRIPFLAGS =	--strip-all
 
 TARGET =	invdaemon
