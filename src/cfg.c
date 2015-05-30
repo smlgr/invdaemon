@@ -80,7 +80,7 @@ void cfg_init() {
 
 void cfg_print() {
     ui_message(UI_INFO, "debug-level = %d", conf->debug_level);
-    ui_message(UI_INFO, "inv-model = %d (%s)", conf->inv_model);
+    ui_message(UI_INFO, "inv-model = %d", conf->inv_model);
     ui_message(UI_INFO, "inv-tcp-addr = %s", conf->inv_tcp_addr);
     ui_message(UI_INFO, "inv-tcp-port = %d", conf->inv_tcp_port);
     ui_message(UI_INFO, "inv-serial-port = %s", conf->inv_serial_port);
@@ -215,7 +215,7 @@ int cfg_parse(int argc, char **argv) {
         }
 
         if (c == 'n') {
-            conf->inv_num = atoi(optarg);
+            conf->inv_num = (unsigned int) atoi(optarg);
         }
 
         if (c == 'i') {
@@ -326,7 +326,7 @@ int cfg_file_parse(char *config_file) {
             }
 
             if (strcmp(param, "inv-num") == 0) {
-                conf->inv_num = atoi(value);
+                conf->inv_num = (unsigned int) atoi(value);
                 ui_message(UI_DEBUG, "Configuration updated. inv_num = %d", conf->inv_num);
                 continue;
             }

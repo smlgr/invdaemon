@@ -22,6 +22,7 @@
 
 #include <malloc.h>
 #include <string.h>
+#include <math.h>
 
 #include "utils.h"
 
@@ -78,4 +79,37 @@ void str_replace_char(char *dst, char *src, char from, char to) {
     }
 
     *dst = '\0';
+}
+
+
+/**
+ * Function used to convert an integer in a fixed-lenght hexadecimal string
+ */
+
+void int2hex(char *dst, unsigned int input, size_t dim) {
+    char pattern[8];
+
+    memset(dst, '\0', sizeof(dst));
+
+    sprintf(pattern, "%%0%dX", (int) dim);
+    sprintf(dst, pattern, input);
+}
+
+
+/**
+ * Function used to compute a standard 16-bit checksum
+ */
+
+__uint16_t checksum16(char *input) {
+    unsigned int sum;
+
+    sum = 0;
+
+    while (*input != '\0') {
+        sum += *input;
+        sum %= (unsigned int) pow(2, 16);
+        input++;
+    }
+
+    return (__uint16_t) sum;
 }

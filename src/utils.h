@@ -29,4 +29,8 @@ void str_trim_doubles(char *dst, char *src, char c);
 
 void str_replace_char(char *dst, char *src, char from, char to);
 
+void int2hex(char *dst, unsigned int input, size_t dim);
+
+__uint16_t checksum16(char *input);
+
 #endif

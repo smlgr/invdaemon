@@ -43,11 +43,7 @@ char *http_call(char *server, unsigned int port, char *path, char *method, char 
     struct hostent *serv_host;
     char url[1025];
     char buff[1025];
-    char tmpmsg[1025];
     char dbgmsg[1025];
-    char row[1025];
-    char *s;
-    char *d;
     ssize_t n;
     size_t ln;
 

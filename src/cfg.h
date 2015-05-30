@@ -34,7 +34,7 @@ struct cfg_t {
     char *inv_serial_port;
     int inv_serial_speed;
 
-    int inv_num;
+    unsigned int inv_num;
 
     int lgr_interval;
 

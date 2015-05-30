@@ -42,8 +42,7 @@ int server_send(invdata *data) {
     response *res;
     char server_url[257];
     char server_data[2049];
-
-    res = res_init();
+    int code;
 
     sprintf(server_url, SERVER_PATH, conf->server_inv_id);
 
@@ -64,12 +63,19 @@ int server_send(invdata *data) {
                     SERVER_METHOD, SERVER_QUERY_STRING, SERVER_CONTENT_TYPE,
                     server_data);
 
+    if(raw == NULL)
+        return -1;
+
+    res = res_init();
     res_parser(res, raw);
     free(raw);
-
-    ui_message(UI_INFO, "Response: %d", res->code);
-
+    code = res->code;
     res_free(res);
 
-    return 0;
+    ui_message(UI_INFO, "Response code: %d", code);
+
+    if(code == 200)
+        return 0;
+
+    return -1;
 }

@@ -25,6 +25,11 @@
 
 #include "inverter.h"
 
+#define SOLARMAX_ID_FROM "FB"
+#define SOLARMAX_QUERY "UDC;IDC;UL1;IL1;PAC;PRL;TKK;TNF;KDY;KLD"
+
+void solarmax_query_prepare(char *dst);
+
 void inv_query_solarmax_s3000_tcp(invdata *data);
 
 #endif

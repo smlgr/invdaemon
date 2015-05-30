@@ -23,18 +23,13 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <pthread.h>
-#include <stdint.h>
 #include <signal.h>
-#include <string.h>
 
-#include <http.h>
-#include <response.h>
 #include <inverter.h>
 
 #include "invdaemon.h"
 #include "ui.h"
 #include "cfg.h"
-#include "utils.h"
 #include "server.h"
 
 char *smlgr_program_name;
@@ -43,6 +38,8 @@ cfg *conf;
 static volatile int keep_running = 1;
 
 int main(int argc, char **argv) {
+    char temp[1024];
+
     smlgr_program_name = argv[0];
 
     signal(SIGINT, signal_handler);
@@ -107,8 +104,12 @@ void *query_thread(void *args) {
 
     inv_query(data);
 
-    if(data->valid == 0) {
-        server_send(data);
+    if (data->valid == 0) {
+        if(server_send(data) == 0) {
+            ui_message(UI_INFO, "Data sent");
+        } else {
+            ui_message(UI_WARNING, "Error sending data");
+        }
     } else {
         ui_message(UI_WARNING, "Inverter query not valid");
     }
@@ -117,25 +118,4 @@ void *query_thread(void *args) {
 
     *running = 0;
     return NULL;
-}
-
-
-/**
- * Test function
- */
-
-void test_query() {
-    char *rawres;
-    response *res;
-
-    res = res_init();
-
-    rawres = http_call("localhost", 80, "/index.html", "GET", "name=text&surname=retest", "application/json",
-                       "{\"param\": \"value\", \"index\": 3}");
-    res_parser(res, rawres);
-    free(rawres);
-
-    ui_message(UI_INFO, "Data: %s", res->data);
-
-    res_free(res);
 }
