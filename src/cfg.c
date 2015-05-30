@@ -22,7 +22,6 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <malloc.h>
 #include <string.h>
 #include <getopt.h>
 
@@ -120,7 +119,7 @@ int cfgParse(int argc, char **argv) {
     int ret = 0;
     int option_index = 0;
     int c;
-    int ln;
+    size_t ln;
     int conf_file = 0;
     char *config_file;
 
@@ -145,6 +144,9 @@ int cfgParse(int argc, char **argv) {
             {0, 0,                                  0, 0}
     };
 
+    config_file = (char *) malloc(sizeof(char));
+    *config_file = '\0';
+
     while (1) {
         c = getopt_long(argc, argv, "c:hVqvd:m:a:p:e:b:n:i:s:r:u:t:", long_options, &option_index);
 
@@ -162,7 +164,7 @@ int cfgParse(int argc, char **argv) {
             conf_file = 1;
 
             ln = strlen(optarg) + 1;
-            config_file = (char *) calloc(sizeof(char), ln);
+            config_file = (char *) realloc(config_file, ln * sizeof(char));
             strcpy(config_file, optarg);
         }
 
@@ -261,7 +263,7 @@ int cfgFileParse(char *config_file) {
     FILE *fd;
     char param[80];
     char value[80];
-    int ln;
+    size_t ln;
     int linecount = 0;
 
     fd = fopen(config_file, "r");
