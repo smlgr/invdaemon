@@ -20,11 +20,5 @@
  */
 
 
-#ifndef __INVDAEMON_H
-#define __INVDAEMON_H
+#include "http.h"
 
-void invdaemon();
-
-void *query_thread(void *);
-
-#endif

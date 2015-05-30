@@ -30,16 +30,14 @@
 #include "ui.h"
 #include "cfg.h"
 
-extern cfg* conf;
-
+extern cfg *conf;
 
 
 /**
  * Configuration init with default values
  */
 
-void cfgInit()
-{
+void cfgInit() {
     size_t ln;
 
     conf = (cfg *) malloc(sizeof(cfg));
@@ -77,13 +75,11 @@ void cfgInit()
 }
 
 
-
 /**
  * Configuration print
  */
 
-void cfgPrint()
-{
+void cfgPrint() {
     uiMessage(UI_INFO, "debug-level = %d", conf->debug_level);
     uiMessage(UI_INFO, "inv-model = %d", conf->inv_model);
     uiMessage(UI_INFO, "inv-tcp-addr = %s", conf->inv_tcp_addr);
@@ -99,13 +95,11 @@ void cfgPrint()
 }
 
 
-
 /**
  * Configuration free
  */
 
-void cfgFree()
-{
+void cfgFree() {
     free(conf->inv_tcp_addr);
     free(conf->inv_serial_port);
     free(conf->server_addr);
@@ -115,7 +109,6 @@ void cfgFree()
 }
 
 
-
 /**
  * Parsing options
  * @param[in] argc Number of arguments in command line
@@ -123,8 +116,7 @@ void cfgFree()
  * @param[out] ret Returns 0 in case of error, 1 if not
  */
 
-int cfgParse(int argc, char **argv)
-{
+int cfgParse(int argc, char **argv) {
     int ret = 0;
     int option_index = 0;
     int c;
@@ -133,40 +125,40 @@ int cfgParse(int argc, char **argv)
     char *config_file;
 
     static struct option long_options[] = {
-        {"config", required_argument, 0, 'c'},
-        {"help", no_argument, 0, 'h'},
-        {"version", no_argument, 0, 'V'},
-        {"quiet", no_argument, 0, 'q'},
-        {"verbose", no_argument, 0, 'v'},
-        {"debug-level", required_argument, 0, 'd'},
-        {"inv-model", required_argument, 0, 'm'},
-        {"inv-tcp-addr", required_argument, 0, 'a'},
-        {"inv-tcp-port", required_argument, 0, 'p'},
-        {"inv-serial-port", required_argument, 0, 'e'},
-        {"inv-serial-speed", required_argument, 0, 'b'},
-        {"inv-num", required_argument, 0, 'n'},
-        {"lgr-interval", required_argument, 0, 'i'},
-        {"server-addr", required_argument, 0, 's'},
-        {"server-port", required_argument, 0, 'r'},
-        {"server-inv-id", required_argument, 0, 'u'},
-        {"server-inv-token", required_argument, 0, 't'},
-        {0, 0, 0, 0}
+            {"config",           required_argument, 0, 'c'},
+            {"help",             no_argument,       0, 'h'},
+            {"version",          no_argument,       0, 'V'},
+            {"quiet",            no_argument,       0, 'q'},
+            {"verbose",          no_argument,       0, 'v'},
+            {"debug-level",      required_argument, 0, 'd'},
+            {"inv-model",        required_argument, 0, 'm'},
+            {"inv-tcp-addr",     required_argument, 0, 'a'},
+            {"inv-tcp-port",     required_argument, 0, 'p'},
+            {"inv-serial-port",  required_argument, 0, 'e'},
+            {"inv-serial-speed", required_argument, 0, 'b'},
+            {"inv-num",          required_argument, 0, 'n'},
+            {"lgr-interval",     required_argument, 0, 'i'},
+            {"server-addr",      required_argument, 0, 's'},
+            {"server-port",      required_argument, 0, 'r'},
+            {"server-inv-id",    required_argument, 0, 'u'},
+            {"server-inv-token", required_argument, 0, 't'},
+            {0, 0,                                  0, 0}
     };
 
-    while(1) {
+    while (1) {
         c = getopt_long(argc, argv, "c:hVqvd:m:a:p:e:b:n:i:s:r:u:t:", long_options, &option_index);
 
-        if(c == -1) {
+        if (c == -1) {
             ret = 1;
             break;
         }
 
-        if(c == '?') {
+        if (c == '?') {
             uiHelp();
             break;
         }
 
-        if(c == 'c') {
+        if (c == 'c') {
             conf_file = 1;
 
             ln = strlen(optarg) + 1;
@@ -174,82 +166,82 @@ int cfgParse(int argc, char **argv)
             strcpy(config_file, optarg);
         }
 
-        if(c == 'h') {
+        if (c == 'h') {
             uiHelp();
             break;
         }
 
-        if(c == 'V') {
+        if (c == 'V') {
             uiVersion();
             break;
         }
 
-        if(c == 'q') {
+        if (c == 'q') {
             conf->debug_level = 0;
         }
 
-        if(c == 'v') {
+        if (c == 'v') {
             conf->debug_level = 4;
         }
 
-        if(c == 'd') {
+        if (c == 'd') {
             conf->debug_level = atoi(optarg);
         }
 
-        if(c == 'm') {
+        if (c == 'm') {
             conf->inv_model = atoi(optarg);
         }
 
-        if(c == 'a') {
+        if (c == 'a') {
             ln = strlen(optarg) + 1;
             conf->inv_tcp_addr = (char *) realloc((void *) conf->inv_tcp_addr, sizeof(char) * ln);
             strcpy(conf->inv_tcp_addr, optarg);
         }
 
-        if(c == 'p') {
+        if (c == 'p') {
             conf->inv_tcp_port = atoi(optarg);
         }
 
-        if(c == 'e') {
+        if (c == 'e') {
             ln = strlen(optarg) + 1;
             conf->inv_serial_port = (char *) realloc((void *) conf->inv_serial_port, sizeof(char) * ln);
             strcpy(conf->inv_serial_port, optarg);
         }
 
-        if(c == 'b') {
+        if (c == 'b') {
             conf->inv_serial_speed = atoi(optarg);
         }
 
-        if(c == 'n') {
+        if (c == 'n') {
             conf->inv_num = atoi(optarg);
         }
 
-        if(c == 'i') {
+        if (c == 'i') {
             conf->lgr_interval = atoi(optarg);
         }
 
-        if(c == 's') {
+        if (c == 's') {
             ln = strlen(optarg) + 1;
             conf->server_addr = (char *) realloc((void *) conf->server_addr, sizeof(char) * ln);
             strcpy(conf->server_addr, optarg);
         }
 
-        if(c == 'r') {
+        if (c == 'r') {
             conf->server_port = atoi(optarg);
         }
 
-        if(c == 'r') {
+        if (c == 'r') {
             conf->server_inv_id = atol(optarg);
         }
 
-        if(c == 't') {
+        if (c == 't') {
             ln = strlen(optarg) + 1;
             conf->server_inv_token = (char *) realloc((void *) conf->server_inv_token, sizeof(char) * ln);
             strcpy(conf->server_inv_token, optarg);
         }
     }
 
-    if(conf_file == 1) {
+    if (conf_file == 1) {
         ret = cfgFileParse(config_file);
         free(config_file);
     }
@@ -258,15 +250,13 @@ int cfgParse(int argc, char **argv)
 }
 
 
-
 /**
  * Parsing options
  * @param[in] config_file Path of a config file to parse
  * @param[out] ret Returns 0 in case of error, 1 if not
  */
 
-int cfgFileParse(char *config_file)
-{
+int cfgFileParse(char *config_file) {
     int ret = 0;
     FILE *fd;
     char param[80];
@@ -276,36 +266,36 @@ int cfgFileParse(char *config_file)
 
     fd = fopen(config_file, "r");
 
-    if(fd != NULL) {
+    if (fd != NULL) {
         uiMessage(UI_INFO, "Parsing config file %s", config_file);
 
-        while(!feof(fd)) {
+        while (!feof(fd)) {
             linecount++;
 
             memset(param, '\0', sizeof(param));
             memset(value, '\0', sizeof(value));
 
-            if(fscanf(fd, "%s %s", param, value) != 2) {
-                if(strlen(param) != 0 || strlen(value) != 0)
+            if (fscanf(fd, "%s %s", param, value) != 2) {
+                if (strlen(param) != 0 || strlen(value) != 0)
                     uiMessage(UI_ERROR, "Unable to parse config file in line %d", linecount);
                 continue;
             }
 
             uiMessage(UI_DEBUG, "Param: %s - Value: %s", param, value);
 
-            if(strcmp(param, "debug-level") == 0) {
+            if (strcmp(param, "debug-level") == 0) {
                 conf->debug_level = atoi(value);
                 uiMessage(UI_DEBUG, "Configuration updated. debug_level = %d", conf->debug_level);
                 continue;
             }
 
-            if(strcmp(param, "inv-model") == 0) {
+            if (strcmp(param, "inv-model") == 0) {
                 conf->inv_model = atoi(value);
                 uiMessage(UI_DEBUG, "Configuration updated. inv_model = %d", conf->inv_model);
                 continue;
             }
 
-            if(strcmp(param, "inv-tcp-addr") == 0) {
+            if (strcmp(param, "inv-tcp-addr") == 0) {
                 ln = strlen(value) + 1;
                 conf->inv_tcp_addr = (char *) realloc((void *) conf->inv_tcp_addr, sizeof(char) * ln);
                 strcpy(conf->inv_tcp_addr, value);
@@ -313,13 +303,13 @@ int cfgFileParse(char *config_file)
                 continue;
             }
 
-            if(strcmp(param, "inv-tcp-port") == 0) {
+            if (strcmp(param, "inv-tcp-port") == 0) {
                 conf->inv_tcp_port = atoi(value);
                 uiMessage(UI_DEBUG, "Configuration updated. inv_tcp_port = %d", conf->inv_tcp_port);
                 continue;
             }
 
-            if(strcmp(param, "inv-serial-port") == 0) {
+            if (strcmp(param, "inv-serial-port") == 0) {
                 ln = strlen(value) + 1;
                 conf->inv_tcp_addr = (char *) realloc((void *) conf->inv_tcp_addr, sizeof(char) * ln);
                 strcpy(conf->inv_tcp_addr, value);
@@ -327,25 +317,25 @@ int cfgFileParse(char *config_file)
                 continue;
             }
 
-            if(strcmp(param, "inv-serial-speed") == 0) {
+            if (strcmp(param, "inv-serial-speed") == 0) {
                 conf->inv_serial_speed = atoi(value);
                 uiMessage(UI_DEBUG, "Configuration updated. inv_serial_speed = %d", conf->inv_serial_speed);
                 continue;
             }
 
-            if(strcmp(param, "inv-num") == 0) {
+            if (strcmp(param, "inv-num") == 0) {
                 conf->inv_num = atoi(value);
                 uiMessage(UI_DEBUG, "Configuration updated. inv_num = %d", conf->inv_num);
                 continue;
             }
 
-            if(strcmp(param, "lgr-interval") == 0) {
+            if (strcmp(param, "lgr-interval") == 0) {
                 conf->lgr_interval = atoi(value);
                 uiMessage(UI_DEBUG, "Configuration updated. lgr_interval = %d", conf->lgr_interval);
                 continue;
             }
 
-            if(strcmp(param, "server-addr") == 0) {
+            if (strcmp(param, "server-addr") == 0) {
                 ln = strlen(value) + 1;
                 conf->server_addr = (char *) realloc((void *) conf->server_addr, sizeof(char) * ln);
                 strcpy(conf->server_addr, value);
@@ -353,19 +343,19 @@ int cfgFileParse(char *config_file)
                 continue;
             }
 
-            if(strcmp(param, "server-port") == 0) {
+            if (strcmp(param, "server-port") == 0) {
                 conf->server_port = atoi(value);
                 uiMessage(UI_DEBUG, "Configuration updated. server_port = %d", conf->server_port);
                 continue;
             }
 
-            if(strcmp(param, "server-inv-id") == 0) {
+            if (strcmp(param, "server-inv-id") == 0) {
                 conf->server_inv_id = atoi(value);
                 uiMessage(UI_DEBUG, "Configuration updated. server_inv_id = %d", conf->server_inv_id);
                 continue;
             }
 
-            if(strcmp(param, "server-inv-token") == 0) {
+            if (strcmp(param, "server-inv-token") == 0) {
                 ln = strlen(value) + 1;
                 conf->server_inv_token = (char *) realloc((void *) conf->server_inv_token, sizeof(char) * ln);
                 strcpy(conf->server_inv_token, value);

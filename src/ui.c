@@ -34,36 +34,30 @@ extern cfg *conf;
 extern const char *smlgr_program_name;
 
 
-
 /**
  * Usage information message
  */
 
-void uiUsage()
-{
+void uiUsage() {
     fprintf(stderr, "Usage:\n");
     fprintf(stderr, "    %s [<option> <value> ...]\n", smlgr_program_name);
 }
-
 
 
 /**
  * Version information
  */
 
-void uiVersion()
-{
+void uiVersion() {
     fprintf(stderr, "SMLGR Inverter Daemon\n");
 }
-
 
 
 /**
  * Help information message with all command line options
  */
 
-void uiHelp()
-{
+void uiHelp() {
     fprintf(stderr, "SMLGR Inverter Daemon\n");
     fprintf(stderr, "\n");
 
@@ -92,8 +86,10 @@ void uiHelp()
     fprintf(stderr, "    -a | --inv-tcp-addr      Inverter (via TCP) IP Address (%s)\n", DEFAULT_INVERTER_TCP_IP_ADDR);
     fprintf(stderr, "    -p | --inv-tcp-port      Inverter (via TCP) TCP Port (%d)\n", DEFAULT_INVERTER_TCP_IP_PORT);
     fprintf(stderr, "\n");
-    fprintf(stderr, "    -e | --inv-serial-port   Inverter (via Serial Port) Port Name (%s)\n", DEFAULT_INVERTER_SERIAL_PORT);
-    fprintf(stderr, "    -b | --inv-serial-speed  Inverter (via Serial Port) TCP Port (%d)\n", DEFAULT_INVERTER_SERIAL_SPEED);
+    fprintf(stderr, "    -e | --inv-serial-port   Inverter (via Serial Port) Port Name (%s)\n",
+            DEFAULT_INVERTER_SERIAL_PORT);
+    fprintf(stderr, "    -b | --inv-serial-speed  Inverter (via Serial Port) TCP Port (%d)\n",
+            DEFAULT_INVERTER_SERIAL_SPEED);
     fprintf(stderr, "\n");
     fprintf(stderr, "    -n | --inv-num           Inverter number (%d)\n", DEFAULT_INVERTER_NUM);
     fprintf(stderr, "\n");
@@ -108,34 +104,32 @@ void uiHelp()
 }
 
 
-
 /**
  * Debugging function
  * @param[in] level Level of the messages
  * @param[in] text Text message
  */
 
-void uiMessage(int level, char *text, ...)
-{
+void uiMessage(int level, char *text, ...) {
     va_list args;
     char datetime[20];
     time_t rawtime;
     struct tm *timeinfo;
 
-    if(level <= conf->debug_level) {
+    if (level <= conf->debug_level) {
         rawtime = time(NULL);
         timeinfo = localtime(&rawtime);
         strftime(datetime, 20, "%Y-%m-%d %H:%M:%S", timeinfo);
 
         va_start(args, text);
 
-        if(level == UI_ERROR)
+        if (level == UI_ERROR)
             fprintf(stderr, "%s [ERROR] ", datetime);
-        if(level == UI_WARNING)
+        if (level == UI_WARNING)
             fprintf(stderr, "%s [WARN]  ", datetime);
-        if(level == UI_INFO)
+        if (level == UI_INFO)
             fprintf(stderr, "%s [INFO]  ", datetime);
-        if(level == UI_DEBUG)
+        if (level == UI_DEBUG)
             fprintf(stderr, "%s [DEBUG] ", datetime);
 
         vfprintf(stderr, text, args);
@@ -153,7 +147,6 @@ void uiMessage(int level, char *text, ...)
  * @param[in] errtext Error text
  */
 
-void uiError(char *text, int errnum, char *errtext)
-{
+void uiError(char *text, int errnum, char *errtext) {
     uiMessage(UI_ERROR, "%s (%d): %s", text, errnum, errtext);
 }

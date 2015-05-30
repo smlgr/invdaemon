@@ -20,11 +20,7 @@
  */
 
 
-#ifndef __INVDAEMON_H
-#define __INVDAEMON_H
-
-void invdaemon();
-
-void *query_thread(void *);
+#ifndef __HTTP_H
+#define __HTTP_H
 
 #endif
