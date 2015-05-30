@@ -22,7 +22,6 @@
 
 #include <malloc.h>
 #include <string.h>
-#include <math.h>
 
 #include "utils.h"
 
@@ -107,7 +106,7 @@ __uint16_t checksum16(char *input) {
 
     while (*input != '\0') {
         sum += *input;
-        sum %= (unsigned int) pow(2, 16);
+        sum %= (unsigned int) 0xFFFF;
         input++;
     }
 
