@@ -1,6 +1,6 @@
 /*
- *   SolarMax S3000 DB logger
- *   Copyright (C) 2013  Luca Cireddu
+ *   SMLGR Inverter Daemon
+ *   Copyright (C) 2015  Luca Cireddu
  *   sardylan@gmail.com
  *
  *   This program is free software; you can redistribute it and/or modify
@@ -43,7 +43,6 @@ void strtrmcrlf(char *dst, char *src) {
 }
 
 
-
 /**
  * Remove double chars from a string
  */
@@ -61,7 +60,6 @@ void strtrmdbl(char *dst, char *src, char c) {
 
     *dst = '\0';
 }
-
 
 
 /**

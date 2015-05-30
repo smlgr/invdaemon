@@ -38,18 +38,22 @@ struct cfg_t {
 
     int lgr_interval;
 
-    char* server_addr;
+    char *server_addr;
     int server_port;
     long server_inv_id;
-    char* server_inv_token;
+    char *server_inv_token;
 };
 
 typedef struct cfg_t cfg;
 
 void cfgInit();
+
 void cfgFree();
+
 void cfgPrint();
+
 int cfgParse(int, char **);
+
 int cfgFileParse(char *);
 
 #endif
