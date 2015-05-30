@@ -25,8 +25,8 @@
 
 void strtrmcrlf(char *dst, char *src);
 
-void strtrmdbl(char *dst, char *src, char c);
+void str_trim_doubles(char *dst, char *src, char c);
 
-void strrplc(char *dst, char *src, char from, char to);
+void str_replace_char(char *dst, char *src, char from, char to);
 
 #endif

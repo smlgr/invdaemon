@@ -29,11 +29,13 @@
 
 #include <http.h>
 #include <response.h>
+#include <inverter.h>
 
 #include "invdaemon.h"
 #include "ui.h"
 #include "cfg.h"
 #include "utils.h"
+#include "server.h"
 
 char *smlgr_program_name;
 cfg *conf;
@@ -45,14 +47,14 @@ int main(int argc, char **argv) {
 
     signal(SIGINT, signal_handler);
 
-    cfgInit();
+    cfg_init();
 
-    if (cfgParse(argc, argv)) {
-        cfgPrint();
-        invdaemon();
+    if (cfg_parse(argc, argv)) {
+        cfg_print();
+        inv_daemon();
     }
 
-    cfgFree();
+    cfg_free();
 
     return 0;
 }
@@ -71,16 +73,16 @@ void signal_handler(int signal) {
  * Main program function
  */
 
-void invdaemon() {
+void inv_daemon() {
     pthread_t pth;
     pthread_attr_t attr;
     int running = 0;
 
     while (keep_running == 1) {
-        uiMessage(UI_DEBUG, "Interval");
+        ui_message(UI_DEBUG, "Interval");
 
         if (running == 0) {
-            uiMessage(UI_DEBUG, "Running new query thread");
+            ui_message(UI_DEBUG, "Running new query thread");
             pthread_attr_init(&attr);
             pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
             pthread_create(&pth, &attr, query_thread, (void *) &running);
@@ -97,9 +99,21 @@ void invdaemon() {
 
 void *query_thread(void *args) {
     int *running = (int *) args;
+    invdata *data;
+
     *running = 1;
 
-    test_query();
+    data = inv_init();
+
+    inv_query(data);
+
+    if(data->valid == 0) {
+        server_send(data);
+    } else {
+        ui_message(UI_WARNING, "Inverter query not valid");
+    }
+
+    inv_free(data);
 
     *running = 0;
     return NULL;
@@ -114,14 +128,14 @@ void test_query() {
     char *rawres;
     response *res;
 
-    res = resinit();
+    res = res_init();
 
     rawres = http_call("localhost", 80, "/index.html", "GET", "name=text&surname=retest", "application/json",
                        "{\"param\": \"value\", \"index\": 3}");
-    resparser(res, rawres);
+    res_parser(res, rawres);
     free(rawres);
 
-    uiMessage(UI_INFO, "Data: %s", res->data);
+    ui_message(UI_INFO, "Data: %s", res->data);
 
-    resfree(res);
+    res_free(res);
 }

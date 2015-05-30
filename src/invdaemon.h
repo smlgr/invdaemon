@@ -25,7 +25,7 @@
 
 void signal_handler(int signal);
 
-void invdaemon();
+void inv_daemon();
 
 void *query_thread(void *);
 

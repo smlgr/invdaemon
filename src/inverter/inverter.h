@@ -20,40 +20,34 @@
  */
 
 
-#ifndef __CFG_H
-#define __CFG_H
+#ifndef __INVERTER_H
+#define __INVERTER_H
 
-struct cfg_t {
-    int debug_level;
+#define INVERTER_MODEL_SOLARMAX 1
 
-    int inv_model;
+struct invdata_t {
+    int valid;
 
-    char *inv_tcp_addr;
-    int inv_tcp_port;
+    int ac_power;
+    int ac_voltage;
+    int ac_current;
+    int ac_frequency;
 
-    char *inv_serial_port;
-    int inv_serial_speed;
+    int dc1_voltage;
+    int dc1_current;
+    int dc2_voltage;
+    int dc2_current;
 
-    int inv_num;
-
-    int lgr_interval;
-
-    char *server_addr;
-    unsigned int server_port;
-    long server_inv_id;
-    char *server_inv_token;
+    int temperature;
+    int production;
 };
 
-typedef struct cfg_t cfg;
+typedef struct invdata_t invdata;
 
-void cfg_init();
+invdata *inv_init();
 
-void cfg_free();
+void inv_free(invdata *data);
 
-void cfg_print();
-
-int cfg_parse(int, char **);
-
-int cfg_file_parse(char *);
+void inv_query(invdata *data);
 
 #endif

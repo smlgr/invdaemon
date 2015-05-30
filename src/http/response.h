@@ -32,12 +32,12 @@ struct response_t {
 
 typedef struct response_t response;
 
-void resclr(char *dst, char *src);
+void res_clear(char *dst, char *src);
 
-response *resinit();
+response *res_init();
 
-void resparser(response *res, char *input);
+void res_parser(response *res, char *input);
 
-void resfree(response *res);
+void res_free(response *res);
 
 #endif

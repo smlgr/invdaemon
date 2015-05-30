@@ -20,40 +20,27 @@
  */
 
 
-#ifndef __CFG_H
-#define __CFG_H
+#include "solarmax.h"
+#include "inverter.h"
 
-struct cfg_t {
-    int debug_level;
 
-    int inv_model;
+/**
+ * SolarMax Inverter query function
+ */
 
-    char *inv_tcp_addr;
-    int inv_tcp_port;
+void inv_query_solarmax_s3000_tcp(invdata *data) {
+    data->ac_power = 10000;
+    data->ac_voltage = 2350;
+    data->ac_current = 42;
+    data->ac_frequency = 5000;
 
-    char *inv_serial_port;
-    int inv_serial_speed;
+    data->dc1_voltage = 5000;
+    data->dc1_current = 20;
+    data->dc2_voltage = 0;
+    data->dc2_current = 0;
 
-    int inv_num;
+    data->temperature = 450;
+    data->production = 1234;
 
-    int lgr_interval;
-
-    char *server_addr;
-    unsigned int server_port;
-    long server_inv_id;
-    char *server_inv_token;
-};
-
-typedef struct cfg_t cfg;
-
-void cfg_init();
-
-void cfg_free();
-
-void cfg_print();
-
-int cfg_parse(int, char **);
-
-int cfg_file_parse(char *);
-
-#endif
+    data->valid = 0;
+}

@@ -20,40 +20,56 @@
  */
 
 
-#ifndef __CFG_H
-#define __CFG_H
+#include <malloc.h>
 
-struct cfg_t {
-    int debug_level;
+#include "inverter.h"
+#include "solarmax.h"
+#include "../cfg.h"
 
-    int inv_model;
+extern cfg *conf;
 
-    char *inv_tcp_addr;
-    int inv_tcp_port;
+/**
+ * Inverter data init
+ */
 
-    char *inv_serial_port;
-    int inv_serial_speed;
+invdata *inv_init() {
+    invdata *ret;
 
-    int inv_num;
+    ret = (invdata *) malloc(sizeof(invdata));
 
-    int lgr_interval;
+    ret->valid = -1;
 
-    char *server_addr;
-    unsigned int server_port;
-    long server_inv_id;
-    char *server_inv_token;
-};
+    ret->ac_power = 0;
+    ret->ac_voltage = 0;
+    ret->ac_current = 0;
+    ret->ac_frequency = 0;
 
-typedef struct cfg_t cfg;
+    ret->dc1_voltage = 0;
+    ret->dc1_current = 0;
+    ret->dc2_voltage = 0;
+    ret->dc2_current = 0;
 
-void cfg_init();
+    ret->temperature = 0;
+    ret->production = 0;
 
-void cfg_free();
+    return ret;
+}
 
-void cfg_print();
 
-int cfg_parse(int, char **);
+/**
+ * Inverter data free
+ */
 
-int cfg_file_parse(char *);
+void inv_free(invdata *data) {
+    free(data);
+}
 
-#endif
+
+/**
+ * Inverter call
+ */
+
+void inv_query(invdata *data) {
+    if (conf->inv_model == INVERTER_MODEL_SOLARMAX)
+        inv_query_solarmax_s3000_tcp(data);
+}

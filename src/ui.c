@@ -110,7 +110,7 @@ void uiHelp() {
  * @param[in] text Text message
  */
 
-void uiMessage(int level, char *input, ...) {
+void ui_message(int level, char *input, ...) {
     va_list args;
     char datetime[20];
     time_t rawtime;
@@ -148,5 +148,5 @@ void uiMessage(int level, char *input, ...) {
  */
 
 void uiError(char *text, int errnum, char *errtext) {
-    uiMessage(UI_ERROR, "%s (%d): %s", text, errnum, errtext);
+    ui_message(UI_ERROR, "%s (%d): %s", text, errnum, errtext);
 }

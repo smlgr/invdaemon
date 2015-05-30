@@ -20,40 +20,11 @@
  */
 
 
-#ifndef __CFG_H
-#define __CFG_H
+#ifndef __SOLARMAX_H
+#define __SOLARMAX_H
 
-struct cfg_t {
-    int debug_level;
+#include "inverter.h"
 
-    int inv_model;
-
-    char *inv_tcp_addr;
-    int inv_tcp_port;
-
-    char *inv_serial_port;
-    int inv_serial_speed;
-
-    int inv_num;
-
-    int lgr_interval;
-
-    char *server_addr;
-    unsigned int server_port;
-    long server_inv_id;
-    char *server_inv_token;
-};
-
-typedef struct cfg_t cfg;
-
-void cfg_init();
-
-void cfg_free();
-
-void cfg_print();
-
-int cfg_parse(int, char **);
-
-int cfg_file_parse(char *);
+void inv_query_solarmax_s3000_tcp(invdata *data);
 
 #endif

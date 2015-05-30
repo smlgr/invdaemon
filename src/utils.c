@@ -47,7 +47,7 @@ void strtrmcrlf(char *dst, char *src) {
  * Remove double chars from a string
  */
 
-void strtrmdbl(char *dst, char *src, char c) {
+void str_trim_doubles(char *dst, char *src, char c) {
     while (*src != '\0') {
         *dst = *src;
 
@@ -66,7 +66,7 @@ void strtrmdbl(char *dst, char *src, char c) {
  * Replace char in string
  */
 
-void strrplc(char *dst, char *src, char from, char to) {
+void str_replace_char(char *dst, char *src, char from, char to) {
     while (*src != '\0') {
         if (*src == from)
             *dst = to;

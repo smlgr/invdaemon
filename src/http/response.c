@@ -31,7 +31,7 @@
 /**
  * Clear Response string
  */
-void resclr(char *dst, char *src) {
+void res_clear(char *dst, char *src) {
     size_t ln;
     char *tmp;
 
@@ -41,8 +41,8 @@ void resclr(char *dst, char *src) {
 
     tmp = (char *) calloc(sizeof(char), ln + 1);
 
-    strrplc(tmp, src, '\r', '\n');
-    strtrmdbl(dst, tmp, '\n');
+    str_replace_char(tmp, src, '\r', '\n');
+    str_trim_doubles(dst, tmp, '\n');
 
     free(tmp);
 }
@@ -52,7 +52,7 @@ void resclr(char *dst, char *src) {
  * Response init
  */
 
-response *resinit() {
+response *res_init() {
     response *res;
     res = (response *) malloc(sizeof(response));
 
@@ -70,12 +70,13 @@ response *resinit() {
  * Prepare Response struct from string
  */
 
-void resparser(response *res, char *input) {
+void res_parser(response *res, char *input) {
     char row[8193];
     char *d;
     char *item;
     char *save;
     int empty;
+    size_t ln;
 
     memset(row, '\0', sizeof(row));
     empty = 0;
@@ -86,12 +87,13 @@ void resparser(response *res, char *input) {
             input++;
             d = row;
 
-            uiMessage(UI_DEBUG, "Socket <--  %s", row);
+            ui_message(UI_DEBUG, "Response row: %s", row);
 
             if (empty > 0) {
-                res->data = (char *) realloc(res->data, (strlen(row) + 1) * sizeof(char));
-                strcpy(res->data, row);
-                uiMessage(UI_DEBUG, "Response DATA: %s", res->data);
+                ln = strlen(res->data) + strlen(row) + 1;
+                res->data = (char *) realloc(res->data, ln * sizeof(char));
+                strcat(res->data, row);
+                memset(row, '\0', sizeof(row));
                 continue;
             }
 
@@ -99,7 +101,7 @@ void resparser(response *res, char *input) {
                 item = strtok_r(row, " ", &save);
                 item = strtok_r(NULL, " ", &save);
                 res->code = atoi(item);
-                uiMessage(UI_DEBUG, "Response CODE: %d", res->code);
+                memset(row, '\0', sizeof(row));
                 continue;
             }
 
@@ -108,7 +110,7 @@ void resparser(response *res, char *input) {
                 item = strtok_r(NULL, " ", &save);
                 res->type = (char *) realloc(res->type, (strlen(item) + 1) * sizeof(char));
                 strcpy(res->type, item);
-                uiMessage(UI_DEBUG, "Response TYPE: %s", res->type);
+                memset(row, '\0', sizeof(row));
                 continue;
             }
 
@@ -116,7 +118,7 @@ void resparser(response *res, char *input) {
                 item = strtok_r(row, " ", &save);
                 item = strtok_r(NULL, " ", &save);
                 res->len = atoi(item);
-                uiMessage(UI_DEBUG, "Response LENGTH: %d", res->len);
+                memset(row, '\0', sizeof(row));
                 continue;
             }
 
@@ -124,7 +126,7 @@ void resparser(response *res, char *input) {
                 empty++;
             }
 
-            bzero(row, sizeof(row));
+            memset(row, '\0', sizeof(row));
             continue;
         }
 
@@ -132,6 +134,11 @@ void resparser(response *res, char *input) {
         input++;
         d++;
     } while (*input != '\0');
+
+    ui_message(UI_DEBUG, "Response CODE: %d", res->code);
+    ui_message(UI_DEBUG, "Response TYPE: %s", res->type);
+    ui_message(UI_DEBUG, "Response LENGTH: %d", res->len);
+    ui_message(UI_DEBUG, "Response DATA: %s", res->data);
 }
 
 
@@ -139,7 +146,7 @@ void resparser(response *res, char *input) {
  * Response free
  */
 
-void resfree(response *res) {
+void res_free(response *res) {
     free(res->type);
     free(res->data);
     free(res);
