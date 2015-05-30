@@ -24,6 +24,7 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <time.h>
+#include <string.h>
 
 #include "config.h"
 #include "ui.h"
@@ -109,7 +110,7 @@ void uiHelp() {
  * @param[in] text Text message
  */
 
-void uiMessage(int level, char *text, ...) {
+void uiMessage(int level, char *input, ...) {
     va_list args;
     char datetime[20];
     time_t rawtime;
@@ -120,7 +121,7 @@ void uiMessage(int level, char *text, ...) {
         timeinfo = localtime(&rawtime);
         strftime(datetime, 20, "%Y-%m-%d %H:%M:%S", timeinfo);
 
-        va_start(args, text);
+        va_start(args, input);
 
         if (level == UI_ERROR)
             fprintf(stderr, "%s [ERROR] ", datetime);
@@ -131,7 +132,7 @@ void uiMessage(int level, char *text, ...) {
         if (level == UI_DEBUG)
             fprintf(stderr, "%s [DEBUG] ", datetime);
 
-        vfprintf(stderr, text, args);
+        vfprintf(stderr, input, args);
         fprintf(stderr, "\n");
 
         va_end(args);

@@ -20,15 +20,24 @@
  */
 
 
-#ifndef __INVDAEMON_H
-#define __INVDAEMON_H
+#ifndef __RESPONSE_H
+#define __RESPONSE_H
 
-void signal_handler(int signal);
+struct response_t {
+    int code;
+    char *type;
+    int len;
+    char *data;
+};
 
-void invdaemon();
+typedef struct response_t response;
 
-void *query_thread(void *);
+void resclr(char *dst, char *src);
 
-void test_query();
+response *resinit();
+
+void resparser(response *res, char *input);
+
+void resfree(response *res);
 
 #endif

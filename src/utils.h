@@ -20,15 +20,13 @@
  */
 
 
-#ifndef __INVDAEMON_H
-#define __INVDAEMON_H
+#ifndef __UTILS_H
+#define __UTILS_H
 
-void signal_handler(int signal);
+void strtrmcrlf(char *dst, char *src);
 
-void invdaemon();
+void strtrmdbl(char *dst, char *src, char c);
 
-void *query_thread(void *);
-
-void test_query();
+void strrplc(char *dst, char *src, char from, char to);
 
 #endif

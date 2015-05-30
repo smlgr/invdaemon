@@ -243,10 +243,10 @@ int cfgParse(int argc, char **argv) {
         }
     }
 
-    if (conf_file == 1) {
+    if (conf_file == 1)
         ret = cfgFileParse(config_file);
-        free(config_file);
-    }
+
+    free(config_file);
 
     return ret;
 }
@@ -274,8 +274,8 @@ int cfgFileParse(char *config_file) {
         while (!feof(fd)) {
             linecount++;
 
-            memset(param, '\0', sizeof(param));
-            memset(value, '\0', sizeof(value));
+            bzero(param, sizeof(param));
+            bzero(value, sizeof(value));
 
             if (fscanf(fd, "%s %s", param, value) != 2) {
                 if (strlen(param) != 0 || strlen(value) != 0)
