@@ -32,5 +32,18 @@ invdaemon
 # Debug files
 *.dSYM/
 
-# Temp files
-.*
+
+# JetBrains
+*.iml
+.idea/
+*.ipr
+*.iws
+
+# IntelliJ
+/out/
+
+.idea_modules/
+atlassian-ide-plugin.xml
+com_crashlytics_export_strings.xml
+crashlytics.properties
+crashlytics-build.properties
