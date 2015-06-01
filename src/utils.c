@@ -92,8 +92,6 @@ void str_replace_char(char *dst, char *src, char from, char to) {
 void int2hex(char *dst, unsigned int input, int dim) {
     char pattern[5];
 
-    memset(dst, '\0', sizeof(dst));
-
     sprintf(pattern, "%%0%dX", dim);
     sprintf(dst, pattern, input);
 }

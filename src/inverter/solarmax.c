@@ -48,6 +48,8 @@ void solarmax_query_prepare(char *dst) {
 
     memset(dst, '\0', sizeof(dst));
     memset(tmp, '\0', sizeof(tmp));
+    memset(inverter_num, '\0', sizeof(inverter_num));
+    memset(len, '\0', sizeof(len));
 
     ln = strlen(SOLARMAX_QUERY);
 
