@@ -114,15 +114,12 @@ void ui_message(int level, char *where, char *input, ...) {
     char datetime[20];
     time_t rawtime;
     struct tm *timeinfo;
-    char content[1025];
+    char content[8193];
 
     if (level <= conf->debug_level) {
         rawtime = time(NULL);
         timeinfo = localtime(&rawtime);
         strftime(datetime, 20, "%Y-%m-%d %H:%M:%S", timeinfo);
-
-        strcpy(content, input);
-        truncate_string(content, UI_MESSAGES_MAX_LENGTH);
 
         va_start(args, input);
 
@@ -135,8 +132,9 @@ void ui_message(int level, char *where, char *input, ...) {
         if (level == UI_DEBUG)
             fprintf(UI_MESSAGES_OUTPUT, "%s [DEBUG] {%s} ", datetime, where);
 
-        vfprintf(UI_MESSAGES_OUTPUT, input, args);
-        fprintf(UI_MESSAGES_OUTPUT, "\n");
+        vsprintf(content, input, args);
+        truncate_string(content, UI_MESSAGES_MAX_LENGTH);
+        fprintf(UI_MESSAGES_OUTPUT, "%s\n", content);
 
         va_end(args);
     }
