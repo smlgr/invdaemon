@@ -167,14 +167,17 @@ void truncate_string(char *input, unsigned int max_length) {
 
     ln = strlen(input);
 
-    if (ln > 3 && ln > max_length) {
-        for (i = 0; i < max_length; i++)
-            if (*(input + i) == '\n')
-                break;
+    if (ln > 3 && ln > max_length + 4) {
+        i = 0;
 
-        *(input + i + 0) = '.';
-        *(input + i + 1) = '.';
-        *(input + i + 2) = '.';
-        *(input + i + 3) = '\0';
+        while(*input != '\n' && *input != '\r' && i < max_length) {
+            input++;
+            i++;
+        }
+
+        *(input + 0) = '.';
+        *(input + 1) = '.';
+        *(input + 2) = '.';
+        *(input + 3) = '\0';
     }
 }

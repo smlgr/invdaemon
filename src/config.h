@@ -46,7 +46,7 @@
 #define RESPONSE_ROW_MAX_LENGTH 8193
 #define URL_MAX_LENGTH 257
 #define UI_MESSAGES_OUTPUT stderr
-#define UI_MESSAGES_MAX_LENGTH 40
+#define UI_MESSAGES_MAX_LENGTH 60
 
 #define SERVER_PATH "/smlgr/api/inverter/%ld/payload"
 #define SERVER_QUERY_STRING ""

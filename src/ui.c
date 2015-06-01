@@ -132,8 +132,10 @@ void ui_message(int level, char *where, char *input, ...) {
         if (level == UI_DEBUG)
             fprintf(UI_MESSAGES_OUTPUT, "%s [DEBUG] {%s} ", datetime, where);
 
+        memset(content, '\0', sizeof(content));
         vsprintf(content, input, args);
         truncate_string(content, UI_MESSAGES_MAX_LENGTH);
+
         fprintf(UI_MESSAGES_OUTPUT, "%s\n", content);
 
         va_end(args);
