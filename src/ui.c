@@ -114,7 +114,7 @@ void ui_message(int level, char *where, char *input, ...) {
     char datetime[20];
     time_t rawtime;
     struct tm *timeinfo;
-    char content[8193];
+    char content[131072];
 
     if (level <= conf->debug_level) {
         rawtime = time(NULL);
