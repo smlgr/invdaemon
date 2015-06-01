@@ -50,7 +50,7 @@ char *socket_query(char *hostname, uint16_t port, char *data) {
     struct timeval timeout;
     int flag;
 
-    timeout.tv_sec = 2;
+    timeout.tv_sec = 1;
     timeout.tv_usec = 0;
     flag = 1;
 
