@@ -155,3 +155,26 @@ __uint16_t checksum16(char *input) {
 
     return (__uint16_t) sum;
 }
+
+
+/**
+ * Truncate string to first \n
+ */
+
+void truncate_string(char *input, unsigned int max_length) {
+    size_t ln;
+    int i;
+
+    ln = strlen(input);
+
+    if (ln > 3 && ln > max_length) {
+        for (i = 0; i < max_length; i++)
+            if (*(input + i) == '\n')
+                break;
+
+        *(input + i + 0) = '.';
+        *(input + i + 1) = '.';
+        *(input + i + 2) = '.';
+        *(input + i + 3) = '\0';
+    }
+}

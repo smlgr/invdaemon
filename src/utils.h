@@ -35,4 +35,6 @@ unsigned int hex2uint(char *input);
 
 __uint16_t checksum16(char *input);
 
+void truncate_string(char *input, unsigned int max_length);
+
 #endif

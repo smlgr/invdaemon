@@ -24,10 +24,12 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <time.h>
+#include <string.h>
 
 #include "config.h"
 #include "ui.h"
 #include "cfg.h"
+#include "utils.h"
 
 extern cfg *conf;
 extern const char *smlgr_program_name;
@@ -112,25 +114,29 @@ void ui_message(int level, char *where, char *input, ...) {
     char datetime[20];
     time_t rawtime;
     struct tm *timeinfo;
+    char content[1025];
 
     if (level <= conf->debug_level) {
         rawtime = time(NULL);
         timeinfo = localtime(&rawtime);
         strftime(datetime, 20, "%Y-%m-%d %H:%M:%S", timeinfo);
 
+        strcpy(content, input);
+        truncate_string(content, UI_MESSAGES_MAX_LENGTH);
+
         va_start(args, input);
 
         if (level == UI_ERROR)
-            fprintf(stderr, "%s [ERROR] {%s} ", datetime, where);
+            fprintf(UI_MESSAGES_OUTPUT, "%s [ERROR] {%s} ", datetime, where);
         if (level == UI_WARNING)
-            fprintf(stderr, "%s [WARN]  {%s} ", datetime, where);
+            fprintf(UI_MESSAGES_OUTPUT, "%s [WARN]  {%s} ", datetime, where);
         if (level == UI_INFO)
-            fprintf(stderr, "%s [INFO]  {%s} ", datetime, where);
+            fprintf(UI_MESSAGES_OUTPUT, "%s [INFO]  {%s} ", datetime, where);
         if (level == UI_DEBUG)
-            fprintf(stderr, "%s [DEBUG] {%s} ", datetime, where);
+            fprintf(UI_MESSAGES_OUTPUT, "%s [DEBUG] {%s} ", datetime, where);
 
-        vfprintf(stderr, input, args);
-        fprintf(stderr, "\n");
+        vfprintf(UI_MESSAGES_OUTPUT, input, args);
+        fprintf(UI_MESSAGES_OUTPUT, "\n");
 
         va_end(args);
     }
