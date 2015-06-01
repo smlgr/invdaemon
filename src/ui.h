@@ -35,8 +35,6 @@ void uiVersion();
 
 void uiHelp();
 
-void ui_message(int, char *, ...);
-
-void uiError(char *, int, char *);
+void ui_message(int level, char *where, char *input, ...);
 
 #endif

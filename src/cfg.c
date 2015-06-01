@@ -79,18 +79,18 @@ void cfg_init() {
  */
 
 void cfg_print() {
-    ui_message(UI_INFO, "debug-level = %d", conf->debug_level);
-    ui_message(UI_INFO, "inv-model = %d", conf->inv_model);
-    ui_message(UI_INFO, "inv-tcp-addr = %s", conf->inv_tcp_addr);
-    ui_message(UI_INFO, "inv-tcp-port = %d", conf->inv_tcp_port);
-    ui_message(UI_INFO, "inv-serial-port = %s", conf->inv_serial_port);
-    ui_message(UI_INFO, "inv-serial-speed = %d", conf->inv_serial_speed);
-    ui_message(UI_INFO, "inv-num = %d", conf->inv_num);
-    ui_message(UI_INFO, "lgr-interval = %d", conf->lgr_interval);
-    ui_message(UI_INFO, "server-addr = %s", conf->server_addr);
-    ui_message(UI_INFO, "server-port = %d", conf->server_port);
-    ui_message(UI_INFO, "server-inv-id = %ld", conf->server_inv_id);
-    ui_message(UI_INFO, "server-inv-token = %s", conf->server_inv_token);
+    ui_message(UI_INFO, "CFG", "debug-level = %d", conf->debug_level);
+    ui_message(UI_INFO, "CFG", "inv-model = %d", conf->inv_model);
+    ui_message(UI_INFO, "CFG", "inv-tcp-addr = %s", conf->inv_tcp_addr);
+    ui_message(UI_INFO, "CFG", "inv-tcp-port = %d", conf->inv_tcp_port);
+    ui_message(UI_INFO, "CFG", "inv-serial-port = %s", conf->inv_serial_port);
+    ui_message(UI_INFO, "CFG", "inv-serial-speed = %d", conf->inv_serial_speed);
+    ui_message(UI_INFO, "CFG", "inv-num = %d", conf->inv_num);
+    ui_message(UI_INFO, "CFG", "lgr-interval = %d", conf->lgr_interval);
+    ui_message(UI_INFO, "CFG", "server-addr = %s", conf->server_addr);
+    ui_message(UI_INFO, "CFG", "server-port = %d", conf->server_port);
+    ui_message(UI_INFO, "CFG", "server-inv-id = %ld", conf->server_inv_id);
+    ui_message(UI_INFO, "CFG", "server-inv-token = %s", conf->server_inv_token);
 }
 
 
@@ -110,9 +110,6 @@ void cfg_free() {
 
 /**
  * Parsing options
- * @param[in] argc Number of arguments in command line
- * @param[in] argv Arguments strings in command line
- * @param[out] ret Returns 0 in case of error, 1 if not
  */
 
 int cfg_parse(int argc, char **argv) {
@@ -201,7 +198,7 @@ int cfg_parse(int argc, char **argv) {
         }
 
         if (c == 'p') {
-            conf->inv_tcp_port = atoi(optarg);
+            conf->inv_tcp_port = (uint16_t) atoi(optarg);
         }
 
         if (c == 'e') {
@@ -229,7 +226,7 @@ int cfg_parse(int argc, char **argv) {
         }
 
         if (c == 'r') {
-            conf->server_port = (unsigned int) atoi(optarg);
+            conf->server_port = (uint16_t) atoi(optarg);
         }
 
         if (c == 'r') {
@@ -269,7 +266,7 @@ int cfg_file_parse(char *config_file) {
     fd = fopen(config_file, "r");
 
     if (fd != NULL) {
-        ui_message(UI_INFO, "Parsing config file %s", config_file);
+        ui_message(UI_INFO, "CFG-FILE", "Parsing config file %s", config_file);
 
         while (!feof(fd)) {
             linecount++;
@@ -279,21 +276,21 @@ int cfg_file_parse(char *config_file) {
 
             if (fscanf(fd, "%s %s", param, value) != 2) {
                 if (strlen(param) != 0 || strlen(value) != 0)
-                    ui_message(UI_ERROR, "Unable to parse config file in line %d", linecount);
+                    ui_message(UI_ERROR, "CFG-FILE", "Unable to parse config file in line %d", linecount);
                 continue;
             }
 
-            ui_message(UI_DEBUG, "Param: %s - Value: %s", param, value);
+            ui_message(UI_DEBUG, "CFG-FILE", "Param: %s - Value: %s", param, value);
 
             if (strcmp(param, "debug-level") == 0) {
                 conf->debug_level = atoi(value);
-                ui_message(UI_DEBUG, "Configuration updated. debug_level = %d", conf->debug_level);
+                ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. debug_level = %d", conf->debug_level);
                 continue;
             }
 
             if (strcmp(param, "inv-model") == 0) {
                 conf->inv_model = atoi(value);
-                ui_message(UI_DEBUG, "Configuration updated. inv_model = %d", conf->inv_model);
+                ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. inv_model = %d", conf->inv_model);
                 continue;
             }
 
@@ -301,13 +298,13 @@ int cfg_file_parse(char *config_file) {
                 ln = strlen(value) + 1;
                 conf->inv_tcp_addr = (char *) realloc((void *) conf->inv_tcp_addr, sizeof(char) * ln);
                 strcpy(conf->inv_tcp_addr, value);
-                ui_message(UI_DEBUG, "Configuration updated. inv_tcp_addr = %s", conf->inv_tcp_addr);
+                ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. inv_tcp_addr = %s", conf->inv_tcp_addr);
                 continue;
             }
 
             if (strcmp(param, "inv-tcp-port") == 0) {
-                conf->inv_tcp_port = atoi(value);
-                ui_message(UI_DEBUG, "Configuration updated. inv_tcp_port = %d", conf->inv_tcp_port);
+                conf->inv_tcp_port = (uint16_t) atoi(value);
+                ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. inv_tcp_port = %d", conf->inv_tcp_port);
                 continue;
             }
 
@@ -315,25 +312,26 @@ int cfg_file_parse(char *config_file) {
                 ln = strlen(value) + 1;
                 conf->inv_tcp_addr = (char *) realloc((void *) conf->inv_tcp_addr, sizeof(char) * ln);
                 strcpy(conf->inv_tcp_addr, value);
-                ui_message(UI_DEBUG, "Configuration updated. inv_tcp_addr = %s", conf->inv_tcp_addr);
+                ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. inv_tcp_addr = %s", conf->inv_tcp_addr);
                 continue;
             }
 
             if (strcmp(param, "inv-serial-speed") == 0) {
                 conf->inv_serial_speed = atoi(value);
-                ui_message(UI_DEBUG, "Configuration updated. inv_serial_speed = %d", conf->inv_serial_speed);
+                ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. inv_serial_speed = %d",
+                           conf->inv_serial_speed);
                 continue;
             }
 
             if (strcmp(param, "inv-num") == 0) {
                 conf->inv_num = (unsigned int) atoi(value);
-                ui_message(UI_DEBUG, "Configuration updated. inv_num = %d", conf->inv_num);
+                ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. inv_num = %d", conf->inv_num);
                 continue;
             }
 
             if (strcmp(param, "lgr-interval") == 0) {
                 conf->lgr_interval = atoi(value);
-                ui_message(UI_DEBUG, "Configuration updated. lgr_interval = %d", conf->lgr_interval);
+                ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. lgr_interval = %d", conf->lgr_interval);
                 continue;
             }
 
@@ -341,19 +339,19 @@ int cfg_file_parse(char *config_file) {
                 ln = strlen(value) + 1;
                 conf->server_addr = (char *) realloc((void *) conf->server_addr, sizeof(char) * ln);
                 strcpy(conf->server_addr, value);
-                ui_message(UI_DEBUG, "Configuration updated. server_addr = %s", conf->server_addr);
+                ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. server_addr = %s", conf->server_addr);
                 continue;
             }
 
             if (strcmp(param, "server-port") == 0) {
-                conf->server_port = (unsigned int) atoi(value);
-                ui_message(UI_DEBUG, "Configuration updated. server_port = %d", conf->server_port);
+                conf->server_port = (uint16_t) atoi(value);
+                ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. server_port = %d", conf->server_port);
                 continue;
             }
 
             if (strcmp(param, "server-inv-id") == 0) {
                 conf->server_inv_id = atoi(value);
-                ui_message(UI_DEBUG, "Configuration updated. server_inv_id = %d", conf->server_inv_id);
+                ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. server_inv_id = %d", conf->server_inv_id);
                 continue;
             }
 
@@ -361,18 +359,19 @@ int cfg_file_parse(char *config_file) {
                 ln = strlen(value) + 1;
                 conf->server_inv_token = (char *) realloc((void *) conf->server_inv_token, sizeof(char) * ln);
                 strcpy(conf->server_inv_token, value);
-                ui_message(UI_DEBUG, "Configuration updated. server_inv_token = %s", conf->server_inv_token);
+                ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. server_inv_token = %s",
+                           conf->server_inv_token);
                 continue;
             }
 
-            ui_message(UI_ERROR, "Unable to parse config file in line %d", linecount);
+            ui_message(UI_ERROR, "CFG-FILE", "Unable to parse config file in line %d", linecount);
         }
 
         fclose(fd);
 
         ret = 1;
     } else {
-        ui_message(UI_ERROR, "Unable to open config file %s", config_file);
+        ui_message(UI_ERROR, "CFG-FILE", "Unable to open config file %s", config_file);
     }
 
     return ret;

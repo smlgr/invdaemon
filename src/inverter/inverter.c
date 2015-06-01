@@ -28,6 +28,7 @@
 
 extern cfg *conf;
 
+
 /**
  * Inverter data init
  */

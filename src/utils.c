@@ -22,12 +22,16 @@
 
 #include <malloc.h>
 #include <string.h>
+#include <ctype.h>
+#include <math.h>
 
 #include "utils.h"
+
 
 /**
  * Removing CR and LF at the end of a string
  */
+
 void strtrmcrlf(char *dst, char *src) {
     size_t ln;
 
@@ -92,6 +96,47 @@ void int2hex(char *dst, unsigned int input, size_t dim) {
 
     sprintf(pattern, "%%0%dX", (int) dim);
     sprintf(dst, pattern, input);
+}
+
+
+/**
+ * Function to convert an HEX value to unsigned integer
+ */
+
+unsigned int hex2uint(char *input) {
+    char values[] = "0123456789ABCDEF";
+    unsigned int output;
+    size_t ln;
+    int i;
+    int j;
+    char c;
+    char d;
+
+    output = 0;
+    ln = strlen(input) - 1;
+    i = 0;
+
+    do {
+        c = (char) toupper(*(input + ln));
+
+        j = 0;
+
+        do {
+            d = values[j];
+
+            if (c == d) {
+                output += pow(16, i) * j;
+                break;
+            }
+
+            j++;
+        } while (c != d);
+
+        ln--;
+        i++;
+    } while (ln >= 0 && toupper(*(input + ln)) != 'X');
+
+    return output;
 }
 
 

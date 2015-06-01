@@ -24,7 +24,6 @@
 #include <stdlib.h>
 #include <stdarg.h>
 #include <time.h>
-#include <string.h>
 
 #include "config.h"
 #include "ui.h"
@@ -105,12 +104,10 @@ void uiHelp() {
 
 
 /**
- * Debugging function
- * @param[in] level Level of the messages
- * @param[in] text Text message
+ * Logging function
  */
 
-void ui_message(int level, char *input, ...) {
+void ui_message(int level, char *where, char *input, ...) {
     va_list args;
     char datetime[20];
     time_t rawtime;
@@ -124,29 +121,17 @@ void ui_message(int level, char *input, ...) {
         va_start(args, input);
 
         if (level == UI_ERROR)
-            fprintf(stderr, "%s [ERROR] ", datetime);
+            fprintf(stderr, "%s [ERROR] {%s} ", datetime, where);
         if (level == UI_WARNING)
-            fprintf(stderr, "%s [WARN]  ", datetime);
+            fprintf(stderr, "%s [WARN]  {%s} ", datetime, where);
         if (level == UI_INFO)
-            fprintf(stderr, "%s [INFO]  ", datetime);
+            fprintf(stderr, "%s [INFO]  {%s} ", datetime, where);
         if (level == UI_DEBUG)
-            fprintf(stderr, "%s [DEBUG] ", datetime);
+            fprintf(stderr, "%s [DEBUG] {%s} ", datetime, where);
 
         vfprintf(stderr, input, args);
         fprintf(stderr, "\n");
 
         va_end(args);
     }
-}
-
-
-/**
- * Error message function
- * @param[in] text Generic message
- * @param[in] errnum Error code
- * @param[in] errtext Error text
- */
-
-void uiError(char *text, int errnum, char *errtext) {
-    ui_message(UI_ERROR, "%s (%d): %s", text, errnum, errtext);
 }

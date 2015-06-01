@@ -27,6 +27,8 @@
 #include "response.h"
 #include "../utils.h"
 #include "../ui.h"
+#include "../config.h"
+
 
 /**
  * Clear Response string
@@ -71,7 +73,7 @@ response *res_init() {
  */
 
 void res_parser(response *res, char *input) {
-    char row[8193];
+    char row[RESPONSE_ROW_MAX_LENGTH];
     char *d;
     char *item;
     char *save;
@@ -87,7 +89,7 @@ void res_parser(response *res, char *input) {
             input++;
             d = row;
 
-            ui_message(UI_DEBUG, "Response row: %s", row);
+            ui_message(UI_DEBUG, "Response", "row: %s", row);
 
             if (empty > 0) {
                 ln = strlen(res->data) + strlen(row) + 1;
@@ -135,10 +137,10 @@ void res_parser(response *res, char *input) {
         d++;
     } while (*input != '\0');
 
-    ui_message(UI_DEBUG, "Response CODE: %d", res->code);
-    ui_message(UI_DEBUG, "Response TYPE: %s", res->type);
-    ui_message(UI_DEBUG, "Response LENGTH: %d", res->len);
-    ui_message(UI_DEBUG, "Response DATA: %s", res->data);
+    ui_message(UI_DEBUG, "Response", "CODE: %d", res->code);
+    ui_message(UI_DEBUG, "Response", "TYPE: %s", res->type);
+    ui_message(UI_DEBUG, "Response", "LENGTH: %d", res->len);
+    ui_message(UI_DEBUG, "Response", "DATA: %s", res->data);
 }
 
 

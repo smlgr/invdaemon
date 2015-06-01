@@ -23,6 +23,8 @@
 #ifndef __HTTP_H
 #define __HTTP_H
 
-char *http_call(char *server, unsigned int port, char *path, char *method, char *query_string, char *type, char *data);
+#include <stdint.h>
+
+char *http_call(char *server, uint16_t port, char *path, char *method, char *query_string, char *type, char *data);
 
 #endif

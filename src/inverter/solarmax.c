@@ -28,6 +28,8 @@
 #include "../utils.h"
 #include "../cfg.h"
 #include "../ui.h"
+#include "../socket.h"
+#include "../config.h"
 
 extern cfg *conf;
 
@@ -42,7 +44,7 @@ void solarmax_query_prepare(char *dst) {
     char len[3];
     __uint16_t checksum;
     char cs[5];
-    char tmp[1025];
+    char tmp[SOCKET_TCP_BUFFER];
 
     memset(dst, '\0', sizeof(dst));
     memset(tmp, '\0', sizeof(tmp));
@@ -50,7 +52,7 @@ void solarmax_query_prepare(char *dst) {
     ln = strlen(SOLARMAX_QUERY);
 
     int2hex(inverter_num, conf->inv_num, 2);
-    int2hex(len, (unsigned int) (13 + ln + 6 + 1), 2);
+    int2hex(len, (unsigned int) (13 + ln + 6), 2);
 
     sprintf(tmp, "%s;%s;%s|64:%s|", SOLARMAX_ID_FROM, inverter_num, len, SOLARMAX_QUERY);
 
@@ -59,7 +61,7 @@ void solarmax_query_prepare(char *dst) {
 
     sprintf(dst, "{%s%s}", tmp, cs);
 
-    ui_message(UI_DEBUG, "Inverter query: %s", dst);
+    ui_message(UI_DEBUG, "INVERTER-SOLARMAX", "Inverter query: %s", dst);
 }
 
 
@@ -68,12 +70,14 @@ void solarmax_query_prepare(char *dst) {
  */
 
 void solarmax_response_parse(invdata *data, char *response) {
-    char c;
     char param[9];
     char value[17];
     char *p;
     char *v;
     int mode;
+
+    if (strlen(response) < 19)
+        return;
 
     memset(param, '\0', sizeof(param));
     memset(value, '\0', sizeof(value));
@@ -82,35 +86,35 @@ void solarmax_response_parse(invdata *data, char *response) {
     p = param;
     v = value;
 
-    while ((c = *response) != (char) "|") {
-        if (c == '=') {
+    while (*response != '|') {
+        if (*response == '=') {
             mode = 1;
-        } else if (c == ';') {
-            ui_message(UI_DEBUG, "%s = %s (%d)", param, value, atoi(value));
+        } else if (*response == ';') {
+            ui_message(UI_DEBUG, "INVERTER-SOLARMAX", "%s = %s", param, value);
 
             if (strcmp(param, "PAC") == 0)
-                data->ac_power = atoi(value) * 5;
+                data->ac_power = (int) strtol(value, NULL, 16) * 5;
 
             if (strcmp(param, "UL1") == 0)
-                data->ac_voltage = atoi(value);
+                data->ac_voltage = (int) strtol(value, NULL, 16);
 
             if (strcmp(param, "IL1") == 0)
-                data->ac_current = atoi(value);
+                data->ac_current = (int) strtol(value, NULL, 16);
 
             if (strcmp(param, "TNF") == 0)
-                data->ac_frequency = atoi(value);
+                data->ac_frequency = (int) strtol(value, NULL, 16);
 
             if (strcmp(param, "UDC") == 0)
-                data->dc1_voltage = atoi(value);
+                data->dc1_voltage = (int) strtol(value, NULL, 16);
 
             if (strcmp(param, "IDC") == 0)
-                data->dc1_current = atoi(value);
+                data->dc1_current = (int) strtol(value, NULL, 16);
 
             if (strcmp(param, "TKK") == 0)
-                data->temperature = atoi(value);
+                data->temperature = (int) strtol(value, NULL, 16) * 10;
 
             if (strcmp(param, "KDY") == 0)
-                data->production = atoi(value);
+                data->production = (int) strtol(value, NULL, 16);
 
             memset(param, '\0', sizeof(param));
             memset(value, '\0', sizeof(value));
@@ -119,17 +123,17 @@ void solarmax_response_parse(invdata *data, char *response) {
             mode = 0;
         } else {
             if (mode == 0) {
-                *p = c;
+                *p = *response;
                 p++;
             } else {
-                *v = c;
+                *v = *response;
                 v++;
             }
         }
         response++;
     }
 
-    data->valid = 1;
+    data->valid = 0;
 }
 
 
@@ -138,18 +142,17 @@ void solarmax_response_parse(invdata *data, char *response) {
  */
 
 void inv_query_solarmax_s3000_tcp(invdata *data) {
-    data->ac_power = 10000;
-    data->ac_voltage = 2350;
-    data->ac_current = 42;
-    data->ac_frequency = 5000;
+    char query[SOCKET_TCP_BUFFER];
+    char *inv_resp;
 
-    data->dc1_voltage = 5000;
-    data->dc1_current = 20;
-    data->dc2_voltage = 0;
-    data->dc2_current = 0;
+    solarmax_query_prepare(query);
 
-    data->temperature = 450;
-    data->production = 1234;
+    inv_resp = socket_query(conf->inv_tcp_addr, conf->inv_tcp_port, query);
 
-    data->valid = 0;
+    if (inv_resp == NULL)
+        return;
+
+    solarmax_response_parse(data, inv_resp);
+
+    free(inv_resp);
 }

@@ -23,5 +23,8 @@
 #ifndef __SOCKET_H
 #define __SOCKET_H
 
+#include <stdint.h>
+
+char *socket_query(char *hostname, uint16_t port, char *data);
 
 #endif

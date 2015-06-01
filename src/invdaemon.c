@@ -38,8 +38,6 @@ cfg *conf;
 static volatile int keep_running = 1;
 
 int main(int argc, char **argv) {
-    char temp[1024];
-
     smlgr_program_name = argv[0];
 
     signal(SIGINT, signal_handler);
@@ -76,10 +74,11 @@ void inv_daemon() {
     int running = 0;
 
     while (keep_running == 1) {
-        ui_message(UI_DEBUG, "Interval");
+        ui_message(UI_DEBUG, "", "Interval");
 
+        ui_message(UI_DEBUG, "", "Running = %d", running);
         if (running == 0) {
-            ui_message(UI_DEBUG, "Running new query thread");
+            ui_message(UI_DEBUG, "", "Running new query thread");
             pthread_attr_init(&attr);
             pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
             pthread_create(&pth, &attr, query_thread, (void *) &running);
@@ -99,23 +98,25 @@ void *query_thread(void *args) {
     invdata *data;
 
     *running = 1;
+    ui_message(UI_DEBUG, "THREAD", "Thread running = %d", *running);
 
     data = inv_init();
 
     inv_query(data);
 
-    if (data->valid == 0) {
-        if(server_send(data) == 0) {
-            ui_message(UI_INFO, "Data sent");
-        } else {
-            ui_message(UI_WARNING, "Error sending data");
-        }
-    } else {
-        ui_message(UI_WARNING, "Inverter query not valid");
-    }
+    if (data->valid == 0)
+        if (server_send(data) == 0)
+            ui_message(UI_INFO, "THREAD", "Thread Data sent");
+        else
+            ui_message(UI_WARNING, "THREAD", "Thread Error sending data");
+    else
+        ui_message(UI_WARNING, "THREAD", "Thread Inverter query not valid");
 
+    ui_message(UI_DEBUG, "THREAD", "Thread free data");
     inv_free(data);
 
     *running = 0;
+    ui_message(UI_DEBUG, "THREAD", "Thread running = %d", *running);
+
     return NULL;
 }

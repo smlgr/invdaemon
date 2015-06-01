@@ -23,13 +23,15 @@
 #ifndef __CFG_H
 #define __CFG_H
 
+#include <stdint.h>
+
 struct cfg_t {
     int debug_level;
 
     int inv_model;
 
     char *inv_tcp_addr;
-    int inv_tcp_port;
+    uint16_t inv_tcp_port;
 
     char *inv_serial_port;
     int inv_serial_speed;
@@ -39,7 +41,7 @@ struct cfg_t {
     int lgr_interval;
 
     char *server_addr;
-    unsigned int server_port;
+    uint16_t server_port;
     long server_inv_id;
     char *server_inv_token;
 };

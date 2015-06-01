@@ -40,8 +40,8 @@ extern cfg *conf;
 int server_send(invdata *data) {
     char *raw;
     response *res;
-    char server_url[257];
-    char server_data[2049];
+    char server_url[URL_MAX_LENGTH];
+    char server_data[SOCKET_TCP_BUFFER];
     int code;
 
     sprintf(server_url, SERVER_PATH, conf->server_inv_id);
@@ -63,7 +63,7 @@ int server_send(invdata *data) {
                     SERVER_METHOD, SERVER_QUERY_STRING, SERVER_CONTENT_TYPE,
                     server_data);
 
-    if(raw == NULL)
+    if (raw == NULL)
         return -1;
 
     res = res_init();
@@ -72,9 +72,9 @@ int server_send(invdata *data) {
     code = res->code;
     res_free(res);
 
-    ui_message(UI_INFO, "Response code: %d", code);
+    ui_message(UI_INFO, "SERVER", "Response code: %d", code);
 
-    if(code == 200)
+    if (code == 200)
         return 0;
 
     return -1;
