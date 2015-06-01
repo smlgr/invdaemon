@@ -58,8 +58,12 @@ response *res_init() {
     response *res;
     res = (response *) malloc(sizeof(response));
 
+    res->code = 0;
+
     res->type = (char *) malloc(sizeof(char));
     *res->type = '\0';
+
+    res->len = 0;
 
     res->data = (char *) malloc(sizeof(char));
     *res->data = '\0';
