@@ -308,7 +308,7 @@ int cfg_file_parse(char *config_file) {
                 continue;
             }
 
-            if (strcmp(param, "log-file-enabled") == 0) {
+            if (strcmp(param, "log-file-level") == 0) {
                 conf->log_file_level = atoi(value);
                 ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. log_file_level = %d", conf->log_file_level);
                 continue;
