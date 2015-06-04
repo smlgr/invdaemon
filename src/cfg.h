@@ -27,6 +27,8 @@
 
 struct cfg_t {
     int debug_level;
+    int log_file_enabled;
+    char *log_file;
 
     int inv_model;
 

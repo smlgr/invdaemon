@@ -20,21 +20,19 @@
  */
 
 
-#ifndef __UI_H
-#define __UI_H
+#include <stdio.h>
 
-#define UI_DISABLE 0
-#define UI_ERROR 1
-#define UI_WARNING 2
-#define UI_INFO 3
-#define UI_DEBUG 4
+#include "log.h"
+#include "cfg.h"
 
-void ui_usage();
+extern cfg *conf;
 
-void ui_version();
+void log_file_message(char *row) {
+    FILE *logfd;
 
-void ui_help();
-
-void ui_message(int level, char *where, char *input, ...);
-
-#endif
+    if(conf->log_file_enabled == 1) {
+        logfd = fopen(conf->log_file, "a");
+        fprintf(logfd, "%s\n", row);
+        fclose(logfd);
+    }
+}

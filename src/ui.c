@@ -30,6 +30,8 @@
 #include "ui.h"
 #include "cfg.h"
 #include "utils.h"
+#include "log.h"
+
 
 extern cfg *conf;
 extern const char *smlgr_program_name;
@@ -39,7 +41,7 @@ extern const char *smlgr_program_name;
  * Usage information message
  */
 
-void uiUsage() {
+void ui_usage() {
     fprintf(stderr, "Usage:\n");
     fprintf(stderr, "    %s [<option> <value> ...]\n", smlgr_program_name);
 }
@@ -49,7 +51,7 @@ void uiUsage() {
  * Version information
  */
 
-void uiVersion() {
+void ui_version() {
     fprintf(stderr, "SMLGR Inverter Daemon\n");
 }
 
@@ -58,11 +60,11 @@ void uiVersion() {
  * Help information message with all command line options
  */
 
-void uiHelp() {
+void ui_help() {
     fprintf(stderr, "SMLGR Inverter Daemon\n");
     fprintf(stderr, "\n");
 
-    uiUsage();
+    ui_usage();
 
     fprintf(stderr, "\n");
     fprintf(stderr, "Options list with default values:\n");
@@ -137,6 +139,8 @@ void ui_message(int level, char *where, char *input, ...) {
         truncate_string(content, UI_MESSAGES_MAX_LENGTH);
 
         fprintf(UI_MESSAGES_OUTPUT, "%s\n", content);
+
+        log_file_message(content);
 
         va_end(args);
     }

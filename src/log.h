@@ -20,21 +20,9 @@
  */
 
 
-#ifndef __UI_H
-#define __UI_H
+#ifndef __LOG_H
+#define __LOG_H
 
-#define UI_DISABLE 0
-#define UI_ERROR 1
-#define UI_WARNING 2
-#define UI_INFO 3
-#define UI_DEBUG 4
-
-void ui_usage();
-
-void ui_version();
-
-void ui_help();
-
-void ui_message(int level, char *where, char *input, ...);
+void log_file_message(char *row);
 
 #endif

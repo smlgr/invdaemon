@@ -24,6 +24,8 @@
 #define __CONFIG_H
 
 #define DEFAULT_UI_DEBUG_LEVEL 4
+#define DEFAULT_LOG_FILE_ENABLED 0
+#define DEFAULT_LOG_FILE_NAME "invdaemon.log"
 
 #define DEFAULT_INVERTER_MODEL 1
 

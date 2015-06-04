@@ -42,6 +42,11 @@ void cfg_init() {
     conf = (cfg *) malloc(sizeof(cfg));
 
     conf->debug_level = DEFAULT_UI_DEBUG_LEVEL;
+    conf->log_file_enabled = DEFAULT_LOG_FILE_ENABLED;
+
+    ln = strlen(DEFAULT_LOG_FILE_NAME) + 1;
+    conf->log_file = (char *) calloc(sizeof(char), ln);
+    strcpy(conf->log_file, DEFAULT_LOG_FILE_NAME);
 
     conf->inv_model = DEFAULT_INVERTER_MODEL;
 
@@ -80,6 +85,8 @@ void cfg_init() {
 
 void cfg_print() {
     ui_message(UI_INFO, "CFG", "debug-level = %d", conf->debug_level);
+    ui_message(UI_INFO, "CFG", "log-file-enabled = %d", conf->log_file_enabled);
+    ui_message(UI_INFO, "CFG", "log-file = %s", conf->log_file);
     ui_message(UI_INFO, "CFG", "inv-model = %d", conf->inv_model);
     ui_message(UI_INFO, "CFG", "inv-tcp-addr = %s", conf->inv_tcp_addr);
     ui_message(UI_INFO, "CFG", "inv-tcp-port = %d", conf->inv_tcp_port);
@@ -99,6 +106,7 @@ void cfg_print() {
  */
 
 void cfg_free() {
+    free(conf->log_file);
     free(conf->inv_tcp_addr);
     free(conf->inv_serial_port);
     free(conf->server_addr);
@@ -127,6 +135,8 @@ int cfg_parse(int argc, char **argv) {
             {"quiet",            no_argument,       0, 'q'},
             {"verbose",          no_argument,       0, 'v'},
             {"debug-level",      required_argument, 0, 'd'},
+            {"log-file-enabled", required_argument, 0, 'k'},
+            {"log-file",         required_argument, 0, 'l'},
             {"inv-model",        required_argument, 0, 'm'},
             {"inv-tcp-addr",     required_argument, 0, 'a'},
             {"inv-tcp-port",     required_argument, 0, 'p'},
@@ -145,7 +155,7 @@ int cfg_parse(int argc, char **argv) {
     *config_file = '\0';
 
     while (1) {
-        c = getopt_long(argc, argv, "c:hVqvd:m:a:p:e:b:n:i:s:r:u:t:", long_options, &option_index);
+        c = getopt_long(argc, argv, "c:hVqvd:k:l:m:a:p:e:b:n:i:s:r:u:t:", long_options, &option_index);
 
         if (c == -1) {
             ret = 1;
@@ -153,7 +163,7 @@ int cfg_parse(int argc, char **argv) {
         }
 
         if (c == '?') {
-            uiHelp();
+            ui_help();
             break;
         }
 
@@ -166,12 +176,12 @@ int cfg_parse(int argc, char **argv) {
         }
 
         if (c == 'h') {
-            uiHelp();
+            ui_help();
             break;
         }
 
         if (c == 'V') {
-            uiVersion();
+            ui_version();
             break;
         }
 
@@ -185,6 +195,16 @@ int cfg_parse(int argc, char **argv) {
 
         if (c == 'd') {
             conf->debug_level = atoi(optarg);
+        }
+
+        if (c == 'k') {
+            conf->log_file_enabled = atoi(optarg);
+        }
+
+        if (c == 'l') {
+            ln = strlen(optarg) + 1;
+            conf->log_file = (char *) realloc((void *) conf->log_file, sizeof(char) * ln);
+            strcpy(conf->log_file, optarg);
         }
 
         if (c == 'm') {
@@ -285,6 +305,20 @@ int cfg_file_parse(char *config_file) {
             if (strcmp(param, "debug-level") == 0) {
                 conf->debug_level = atoi(value);
                 ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. debug_level = %d", conf->debug_level);
+                continue;
+            }
+
+            if (strcmp(param, "log-file-enabled") == 0) {
+                conf->log_file_enabled = atoi(value);
+                ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. log_file_enabled = %d", conf->log_file_enabled);
+                continue;
+            }
+
+            if (strcmp(param, "log-file") == 0) {
+                ln = strlen(value) + 1;
+                conf->log_file = (char *) realloc((void *) conf->log_file, sizeof(char) * ln);
+                strcpy(conf->log_file, value);
+                ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. log_file = %s", conf->log_file);
                 continue;
             }
 
