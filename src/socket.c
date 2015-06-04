@@ -81,6 +81,8 @@ char *socket_query(char *hostname, uint16_t port, char *data) {
 
     ui_message(UI_DEBUG, "SOCKET", "Connecting socket to %s:%d", hostname, port);
     if (connect(sck, (struct sockaddr *) &serv_addr, sizeof(serv_addr)) < 0) {
+        ui_message(UI_DEBUG, "SOCKET", "Error connecting socket");
+        close(sck);
         return NULL;
     }
 
