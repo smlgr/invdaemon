@@ -42,7 +42,7 @@ void cfg_init() {
     conf = (cfg *) malloc(sizeof(cfg));
 
     conf->debug_level = DEFAULT_UI_DEBUG_LEVEL;
-    conf->log_file_enabled = DEFAULT_LOG_FILE_ENABLED;
+    conf->log_file_level = DEFAULT_LOG_FILE_LEVEL;
 
     ln = strlen(DEFAULT_LOG_FILE_NAME) + 1;
     conf->log_file = (char *) calloc(sizeof(char), ln);
@@ -85,7 +85,7 @@ void cfg_init() {
 
 void cfg_print() {
     ui_message(UI_INFO, "CFG", "debug-level = %d", conf->debug_level);
-    ui_message(UI_INFO, "CFG", "log-file-enabled = %d", conf->log_file_enabled);
+    ui_message(UI_INFO, "CFG", "log-file-level = %d", conf->log_file_level);
     ui_message(UI_INFO, "CFG", "log-file = %s", conf->log_file);
     ui_message(UI_INFO, "CFG", "inv-model = %d", conf->inv_model);
     ui_message(UI_INFO, "CFG", "inv-tcp-addr = %s", conf->inv_tcp_addr);
@@ -135,8 +135,8 @@ int cfg_parse(int argc, char **argv) {
             {"quiet",            no_argument,       0, 'q'},
             {"verbose",          no_argument,       0, 'v'},
             {"debug-level",      required_argument, 0, 'd'},
-            {"log-file-enabled", required_argument, 0, 'k'},
-            {"log-file",         required_argument, 0, 'l'},
+            {"log-file-level",   required_argument, 0, 'l'},
+            {"log-file",         required_argument, 0, 'k'},
             {"inv-model",        required_argument, 0, 'm'},
             {"inv-tcp-addr",     required_argument, 0, 'a'},
             {"inv-tcp-port",     required_argument, 0, 'p'},
@@ -197,11 +197,11 @@ int cfg_parse(int argc, char **argv) {
             conf->debug_level = atoi(optarg);
         }
 
-        if (c == 'k') {
-            conf->log_file_enabled = atoi(optarg);
+        if (c == 'l') {
+            conf->log_file_level = atoi(optarg);
         }
 
-        if (c == 'l') {
+        if (c == 'k') {
             ln = strlen(optarg) + 1;
             conf->log_file = (char *) realloc((void *) conf->log_file, sizeof(char) * ln);
             strcpy(conf->log_file, optarg);
@@ -309,8 +309,8 @@ int cfg_file_parse(char *config_file) {
             }
 
             if (strcmp(param, "log-file-enabled") == 0) {
-                conf->log_file_enabled = atoi(value);
-                ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. log_file_enabled = %d", conf->log_file_enabled);
+                conf->log_file_level = atoi(value);
+                ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. log_file_level = %d", conf->log_file_level);
                 continue;
             }
 

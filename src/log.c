@@ -27,12 +27,22 @@
 
 extern cfg *conf;
 
-void log_file_message(char *row) {
+void log_restart() {
     FILE *logfd;
 
-    if(conf->log_file_enabled == 1) {
+    if (conf->log_file_level > 0) {
         logfd = fopen(conf->log_file, "a");
-        fprintf(logfd, "%s\n", row);
+        fprintf(logfd, "---LOG RESTART---\n");
+        fclose(logfd);
+    }
+}
+
+void log_file_message(int level, char *prefix, char *row) {
+    FILE *logfd;
+
+    if (level <= conf->log_file_level) {
+        logfd = fopen(conf->log_file, "a");
+        fprintf(logfd, "%s%s\n", prefix, row);
         fclose(logfd);
     }
 }

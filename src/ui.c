@@ -83,6 +83,17 @@ void ui_help() {
     fprintf(stderr, "                             3 INFO\n");
     fprintf(stderr, "                             4 DEBUG (verbose)\n");
     fprintf(stderr, "\n");
+    fprintf(stderr, "    -l | --log-file-level    Log file level (%d)\n", DEFAULT_LOG_FILE_LEVEL);
+    fprintf(stderr, "                             0 DISABLE\n");
+    fprintf(stderr, "                             1 ERROR\n");
+    fprintf(stderr, "                             2 WARNING\n");
+    fprintf(stderr, "                             3 INFO\n");
+    fprintf(stderr, "                             4 DEBUG\n");
+    fprintf(stderr, "\n");
+    fprintf(stderr, "    -k | --log-file          Log file name and path (%s)\n", DEFAULT_LOG_FILE_NAME);
+    fprintf(stderr, "\n");
+    fprintf(stderr, "\n");
+    fprintf(stderr, "\n");
     fprintf(stderr, "    -m | --inv-model         Inverter Model (%d)\n", DEFAULT_INVERTER_MODEL);
     fprintf(stderr, "                             1. SolarMax S3000 TCP\n");
     fprintf(stderr, "\n");
@@ -117,6 +128,7 @@ void ui_message(int level, char *where, char *input, ...) {
     time_t rawtime;
     struct tm *timeinfo;
     char content[131072];
+    char prefix[1025];
 
     if (level <= conf->debug_level) {
         rawtime = time(NULL);
@@ -126,13 +138,15 @@ void ui_message(int level, char *where, char *input, ...) {
         va_start(args, input);
 
         if (level == UI_ERROR)
-            fprintf(UI_MESSAGES_OUTPUT, "%s [ERROR] {%s} ", datetime, where);
+            sprintf(prefix, "%s [ERROR] {%s} ", datetime, where);
         if (level == UI_WARNING)
-            fprintf(UI_MESSAGES_OUTPUT, "%s [WARN]  {%s} ", datetime, where);
+            sprintf(prefix, "%s [WARN]  {%s} ", datetime, where);
         if (level == UI_INFO)
-            fprintf(UI_MESSAGES_OUTPUT, "%s [INFO]  {%s} ", datetime, where);
+            sprintf(prefix, "%s [INFO]  {%s} ", datetime, where);
         if (level == UI_DEBUG)
-            fprintf(UI_MESSAGES_OUTPUT, "%s [DEBUG] {%s} ", datetime, where);
+            sprintf(prefix, "%s [DEBUG] {%s} ", datetime, where);
+
+        fprintf(UI_MESSAGES_OUTPUT, "%s", prefix);
 
         memset(content, '\0', sizeof(content));
         vsprintf(content, input, args);
@@ -140,8 +154,8 @@ void ui_message(int level, char *where, char *input, ...) {
 
         fprintf(UI_MESSAGES_OUTPUT, "%s\n", content);
 
-        log_file_message(content);
-
         va_end(args);
     }
+
+    log_file_message(level, prefix, content);
 }

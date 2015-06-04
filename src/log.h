@@ -23,6 +23,8 @@
 #ifndef __LOG_H
 #define __LOG_H
 
-void log_file_message(char *row);
+void log_restart();
+
+void log_file_message(int level, char *prefix, char *row);
 
 #endif
