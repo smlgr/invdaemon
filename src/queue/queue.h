@@ -20,36 +20,29 @@
  */
 
 
-#ifndef __INVERTER_H
-#define __INVERTER_H
+#ifndef __QUEUE_H
+#define __QUEUE_H
 
-#define INVERTER_MODEL_SOLARMAX 1
+#include <time.h>
 
-struct invdata_t {
-    int valid;
+#include "../inverter/inverter.h"
 
-    int ac_power;
-    int ac_voltage;
-    int ac_current;
-    int ac_frequency;
-
-    int dc1_voltage;
-    int dc1_current;
-    int dc2_voltage;
-    int dc2_current;
-
-    int temperature;
-    int production;
+struct queue_t {
+    time_t datetime;
+    invdata *data;
+    struct queue_t *next;
 };
 
-typedef struct invdata_t invdata;
+typedef struct queue_t QUEUE;
 
-invdata *inv_init();
+void queue_init();
 
-void inv_free(invdata *data);
+void queue_destroy();
 
-void inv_query(invdata *data);
+void queue_push(invdata *data);
 
-void inv_data_clone(invdata *dst, invdata *src);
+QUEUE *queue_offer();
+
+void  queue_remove();
 
 #endif

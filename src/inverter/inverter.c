@@ -74,3 +74,25 @@ void inv_query(invdata *data) {
     if (conf->inv_model == INVERTER_MODEL_SOLARMAX)
         inv_query_solarmax_s3000_tcp(data);
 }
+
+
+/**
+ * Inverter call
+ */
+
+void inv_data_clone(invdata *dst, invdata *src) {
+    dst->valid = src->valid;
+
+    dst->ac_power = src->ac_power;
+    dst->ac_voltage = src->ac_voltage;
+    dst->ac_current = src->ac_current;
+    dst->ac_frequency = src->ac_frequency;
+
+    dst->dc1_voltage = src->dc1_voltage;
+    dst->dc1_current = src->dc1_current;
+    dst->dc2_voltage = src->dc2_voltage;
+    dst->dc2_current = src->dc2_current;
+
+    dst->temperature = src->temperature;
+    dst->production = src->production;
+}

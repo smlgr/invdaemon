@@ -106,12 +106,15 @@ void *query_thread(void *args) {
 
     inv_query(data);
 
-    if (data->valid == 0) if (server_send(data) == 0)
-        ui_message(UI_INFO, "THREAD", "Thread Data sent");
-    else
-        ui_message(UI_WARNING, "THREAD", "Thread Error sending data");
-    else
+    if (data->valid == 0) {
+        if (server_send(data) == 0) {
+            ui_message(UI_INFO, "THREAD", "Thread Data sent");
+        } else {
+            ui_message(UI_WARNING, "THREAD", "Thread Error sending data");
+        }
+    } else {
         ui_message(UI_WARNING, "THREAD", "Thread Inverter query not valid");
+    }
 
     ui_message(UI_DEBUG, "THREAD", "Thread free data");
     inv_free(data);

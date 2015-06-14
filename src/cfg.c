@@ -148,7 +148,7 @@ int cfg_parse(int argc, char **argv) {
             {"server-port",      required_argument, 0, 'r'},
             {"server-inv-id",    required_argument, 0, 'u'},
             {"server-inv-token", required_argument, 0, 't'},
-            {0, 0,                                  0, 0}
+            {0,                  0,                 0, 0}
     };
 
     config_file = (char *) malloc(sizeof(char));
