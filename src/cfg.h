@@ -46,6 +46,8 @@ struct cfg_t {
     uint16_t server_port;
     long server_inv_id;
     char *server_inv_token;
+
+    int queue_size;
 };
 
 typedef struct cfg_t cfg;

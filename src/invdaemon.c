@@ -26,6 +26,7 @@
 #include <signal.h>
 
 #include <inverter.h>
+#include <queue.h>
 
 #include "invdaemon.h"
 #include "ui.h"
@@ -62,7 +63,9 @@ int main(int argc, char **argv) {
  */
 
 void signal_handler(int signal) {
-    keep_running = 0;
+    if (signal == SIGINT) {
+        keep_running = 0;
+    }
 }
 
 
@@ -75,10 +78,14 @@ void inv_daemon() {
     pthread_attr_t attr;
     int running = 0;
 
+    if (conf->queue_size > 0) {
+        queue_init();
+    }
+
     while (keep_running == 1) {
         ui_message(UI_DEBUG, "", "Interval");
 
-        ui_message(UI_INFO, "", "Running = %d", running);
+        ui_message(UI_DEBUG, "", "Running = %d", running);
         if (running == 0) {
             ui_message(UI_DEBUG, "", "Running new query thread");
             pthread_attr_init(&attr);
@@ -87,6 +94,10 @@ void inv_daemon() {
         }
 
         sleep((unsigned int) conf->lgr_interval);
+    }
+
+    if (conf->queue_size > 0) {
+        queue_destroy();
     }
 }
 
@@ -100,17 +111,23 @@ void *query_thread(void *args) {
     invdata *data;
 
     *running = 1;
-    ui_message(UI_INFO, "THREAD", "Thread running = %d", *running);
+    ui_message(UI_DEBUG, "THREAD", "Thread running = %d", *running);
 
     data = inv_init();
 
     inv_query(data);
 
     if (data->valid == 0) {
-        if (server_send(data) == 0) {
-            ui_message(UI_INFO, "THREAD", "Thread Data sent");
+        if (conf->queue_size > 0) {
+            ui_message(UI_DEBUG, "THREAD", "Adding element to queue");
+
+            // TODO: Adding element to queue
         } else {
-            ui_message(UI_WARNING, "THREAD", "Thread Error sending data");
+            if (server_send(data) == 0) {
+                ui_message(UI_INFO, "THREAD", "Thread Data sent");
+            } else {
+                ui_message(UI_WARNING, "THREAD", "Thread Error sending data");
+            }
         }
     } else {
         ui_message(UI_WARNING, "THREAD", "Thread Inverter query not valid");
@@ -120,7 +137,7 @@ void *query_thread(void *args) {
     inv_free(data);
 
     *running = 0;
-    ui_message(UI_INFO, "THREAD", "Thread running = %d", *running);
+    ui_message(UI_DEBUG, "THREAD", "Thread running = %d", *running);
 
     return NULL;
 }

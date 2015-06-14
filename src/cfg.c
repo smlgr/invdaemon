@@ -76,6 +76,8 @@ void cfg_init() {
     ln = strlen(DEFAULT_SERVER_INVERTER_TOKEN) + 1;
     conf->server_inv_token = (char *) calloc(sizeof(char), ln);
     strcpy(conf->server_inv_token, DEFAULT_SERVER_INVERTER_TOKEN);
+
+    conf->queue_size = DEFAULT_QUEUE_SIZE;
 }
 
 
@@ -98,6 +100,7 @@ void cfg_print() {
     ui_message(UI_INFO, "CFG", "server-port = %d", conf->server_port);
     ui_message(UI_INFO, "CFG", "server-inv-id = %ld", conf->server_inv_id);
     ui_message(UI_INFO, "CFG", "server-inv-token = %s", conf->server_inv_token);
+    ui_message(UI_INFO, "CFG", "queue-size = %d", conf->queue_size);
 }
 
 
@@ -148,6 +151,7 @@ int cfg_parse(int argc, char **argv) {
             {"server-port",      required_argument, 0, 'r'},
             {"server-inv-id",    required_argument, 0, 'u'},
             {"server-inv-token", required_argument, 0, 't'},
+            {"queue-size",       required_argument, 0, 'Q'},
             {0,                  0,                 0, 0}
     };
 
@@ -155,7 +159,7 @@ int cfg_parse(int argc, char **argv) {
     *config_file = '\0';
 
     while (1) {
-        c = getopt_long(argc, argv, "c:hVqvd:k:l:m:a:p:e:b:n:i:s:r:u:t:", long_options, &option_index);
+        c = getopt_long(argc, argv, "c:hVqvd:k:l:m:a:p:e:b:n:i:s:r:u:t:Q:", long_options, &option_index);
 
         if (c == -1) {
             ret = 1;
@@ -257,6 +261,10 @@ int cfg_parse(int argc, char **argv) {
             ln = strlen(optarg) + 1;
             conf->server_inv_token = (char *) realloc((void *) conf->server_inv_token, sizeof(char) * ln);
             strcpy(conf->server_inv_token, optarg);
+        }
+
+        if (c == 'Q') {
+            conf->queue_size = atoi(optarg);
         }
     }
 
@@ -395,6 +403,12 @@ int cfg_file_parse(char *config_file) {
                 strcpy(conf->server_inv_token, value);
                 ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. server_inv_token = %s",
                            conf->server_inv_token);
+                continue;
+            }
+
+            if (strcmp(param, "queue-size") == 0) {
+                conf->queue_size = atoi(value);
+                ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. queue_size = %d", conf->queue_size);
                 continue;
             }
 
