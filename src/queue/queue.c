@@ -26,9 +26,12 @@
 #include <stdlib.h>
 
 #include "queue.h"
+#include "../server.h"
+#include "../ui.h"
 
-QUEUE *queue_first;
-QUEUE *queue_last;
+QUEUE *item_first;
+QUEUE *item_last;
+int items_count;
 
 pthread_mutex_t queue_lock;
 
@@ -42,8 +45,9 @@ void queue_init() {
 
     pthread_mutex_lock(&queue_lock);
 
-    queue_first = NULL;
-    queue_last = NULL;
+    item_first = NULL;
+    item_last = NULL;
+    items_count = 0;
 
     pthread_mutex_unlock(&queue_lock);
 }
@@ -59,7 +63,7 @@ void queue_destroy() {
 
     pthread_mutex_lock(&queue_lock);
 
-    q = queue_first;
+    q = item_first;
 
     if (q == NULL)
         return;
@@ -75,8 +79,9 @@ void queue_destroy() {
     inv_free(q->data);
     free(q);
 
-    queue_first = NULL;
-    queue_last = NULL;
+    item_first = NULL;
+    item_last = NULL;
+    items_count = 0;
 
     pthread_mutex_unlock(&queue_lock);
 
@@ -88,26 +93,28 @@ void queue_destroy() {
  * Add an element at the end of the queue
  */
 
-void queue_push(invdata *input) {
+void queue_add(invdata *input) {
     QUEUE *i;
 
     i = (QUEUE *) malloc(sizeof(QUEUE));
 
     pthread_mutex_lock(&queue_lock);
 
-    if (queue_last == NULL) {
-        queue_last = i;
+    if (item_last == NULL) {
+        item_last = i;
     } else {
-        queue_last->next = i;
-        queue_last = queue_last->next;
+        item_last->next = i;
+        item_last = item_last->next;
     }
 
-    queue_last->datetime = time(NULL);
+    item_last->datetime = time(NULL);
 
-    queue_last->data = (invdata *) malloc(sizeof(invdata));
-    inv_data_clone(queue_last->data, input);
+    item_last->data = (invdata *) malloc(sizeof(invdata));
+    inv_data_clone(item_last->data, input);
 
-    queue_last->next = NULL;
+    item_last->next = NULL;
+
+    items_count++;
 
     pthread_mutex_unlock(&queue_lock);
 }
@@ -124,15 +131,15 @@ QUEUE *queue_offer() {
 
     pthread_mutex_lock(&queue_lock);
 
-    if (queue_first == NULL)
+    if (item_first == NULL)
         return ret;
 
     ret = (QUEUE *) malloc(sizeof(QUEUE));
-    ret->datetime = queue_first->datetime;
+    ret->datetime = item_first->datetime;
     ret->next = NULL;
 
     ret->data = (invdata *) malloc(sizeof(invdata));
-    inv_data_clone(ret->data, queue_first->data);
+    inv_data_clone(ret->data, item_first->data);
 
     pthread_mutex_unlock(&queue_lock);
 
@@ -149,12 +156,31 @@ void queue_remove() {
 
     pthread_mutex_lock(&queue_lock);
 
-    if (queue_first == NULL)
+    if (item_first == NULL)
         return;
 
-    item = queue_first;
-    queue_first = queue_first->next;
+    item = item_first;
+    item_first = item_first->next;
 
     inv_free(item->data);
     free(item);
+
+    items_count--;
+}
+
+
+/**
+ * Try to send queue to server
+ */
+
+void queue_send() {
+    do {
+        if (server_send_ts(item_first->data, item_first->datetime) == 0) {
+            ui_message(UI_INFO, "QUEUE", "Thread Data sent");
+            queue_remove();
+        } else {
+            ui_message(UI_WARNING, "QUEUE", "Thread Error sending data");
+            break;
+        }
+    } while (item_first != NULL);
 }

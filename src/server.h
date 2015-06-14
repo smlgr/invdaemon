@@ -23,7 +23,9 @@
 #ifndef __SERVER_H
 #define __SERVER_H
 
-#include <inverter.h>
+#include "inverter/inverter.h"
+
+int server_send_ts(invdata *data, time_t timestamp);
 
 int server_send(invdata *data);
 

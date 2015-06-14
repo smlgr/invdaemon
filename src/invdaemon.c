@@ -25,8 +25,8 @@
 #include <pthread.h>
 #include <signal.h>
 
-#include <inverter.h>
-#include <queue.h>
+#include "inverter/inverter.h"
+#include "queue/queue.h"
 
 #include "invdaemon.h"
 #include "ui.h"
@@ -120,8 +120,8 @@ void *query_thread(void *args) {
     if (data->valid == 0) {
         if (conf->queue_size > 0) {
             ui_message(UI_DEBUG, "THREAD", "Adding element to queue");
-
-            // TODO: Adding element to queue
+            queue_add(data);
+            queue_send();
         } else {
             if (server_send(data) == 0) {
                 ui_message(UI_INFO, "THREAD", "Thread Data sent");

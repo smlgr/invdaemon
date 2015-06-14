@@ -56,6 +56,6 @@
 #define SERVER_QUERY_STRING ""
 #define SERVER_METHOD "POST"
 #define SERVER_CONTENT_TYPE "application/json"
-#define SERVER_DATA "{\"token\":\"%s\",\"data\":{\"ac_power\":%d,\"ac_voltage\":%d,\"ac_current\":%d,\"ac_frequency\":%d,\"dc1_voltage\":%d,\"dc1_current\":%d,\"dc2_voltage\":%d,\"dc2_current\":%d,\"temperature\":%d,\"production\":%d}}"
+#define SERVER_DATA "{\"timestamp\":%lld,\"token\":\"%s\",\"data\":{\"ac_power\":%d,\"ac_voltage\":%d,\"ac_current\":%d,\"ac_frequency\":%d,\"dc1_voltage\":%d,\"dc1_current\":%d,\"dc2_voltage\":%d,\"dc2_current\":%d,\"temperature\":%d,\"production\":%d}}"
 
 #endif

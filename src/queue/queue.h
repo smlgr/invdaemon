@@ -39,10 +39,12 @@ void queue_init();
 
 void queue_destroy();
 
-void queue_push(invdata *data);
+void queue_add(invdata *data);
 
 QUEUE *queue_offer();
 
 void  queue_remove();
+
+void queue_send();
 
 #endif

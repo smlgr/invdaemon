@@ -21,10 +21,11 @@
 
 
 #include <malloc.h>
+#include <time.h>
 
-#include <inverter.h>
-#include <response.h>
-#include <http.h>
+#include "inverter/inverter.h"
+#include "http/response.h"
+#include "http/http.h"
 
 #include "cfg.h"
 #include "ui.h"
@@ -34,10 +35,10 @@ extern cfg *conf;
 
 
 /*
- * Send data to server
+ * Send data to server with timestamp
  */
 
-int server_send(invdata *data) {
+int server_send_ts(invdata *data, time_t timestamp) {
     char *raw;
     response *res;
     char server_url[URL_MAX_LENGTH];
@@ -47,6 +48,7 @@ int server_send(invdata *data) {
     sprintf(server_url, SERVER_PATH, conf->server_inv_id);
 
     sprintf(server_data, SERVER_DATA,
+            (long long) timestamp,
             conf->server_inv_token,
             data->ac_power,
             data->ac_voltage,
@@ -78,4 +80,13 @@ int server_send(invdata *data) {
         return 0;
 
     return -1;
+}
+
+
+/*
+ * Send data to server without timestamp
+ */
+
+int server_send(invdata *data) {
+    return server_send_ts(data, 0);
 }
