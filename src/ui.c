@@ -111,7 +111,7 @@ void ui_help() {
     fprintf(stderr, "\n");
     fprintf(stderr, "    -s | --server-addr       Stat Server IP Address (%s)\n", DEFAULT_SERVER_ADDR);
     fprintf(stderr, "    -r | --server-port       Stat Server TCP port (%d)\n", DEFAULT_SERVER_PORT);
-    fprintf(stderr, "    -u | --server-inv-id     Stat Server Inverter ID (%ld)\n", DEFAULT_SERVER_INVERTER_ID);
+    fprintf(stderr, "    -u | --server-inv-name   Stat Server Inverter Name (%s)\n", DEFAULT_SERVER_INVERTER_NAME);
     fprintf(stderr, "    -t | --server-inv-token  Stat Server Inverter Token (%s)\n", DEFAULT_SERVER_INVERTER_TOKEN);
     fprintf(stderr, "\n");
     fprintf(stderr, "All outputs are on Standard Error.\n");

@@ -44,7 +44,7 @@ struct cfg_t {
 
     char *server_addr;
     uint16_t server_port;
-    long server_inv_id;
+    char *server_inv_name;
     char *server_inv_token;
 
     int queue_size;

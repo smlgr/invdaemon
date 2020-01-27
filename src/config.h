@@ -41,10 +41,10 @@
 
 #define DEFAULT_SERVER_ADDR "localhost"
 #define DEFAULT_SERVER_PORT 8080
-#define DEFAULT_SERVER_INVERTER_ID 1l
+#define DEFAULT_SERVER_INVERTER_NAME "inverter"
 #define DEFAULT_SERVER_INVERTER_TOKEN "0123456789abcdef"
 
-#define DEFAULT_QUEUE_SIZE 1024;
+#define DEFAULT_QUEUE_SIZE 1024
 
 #define SOCKET_TCP_BUFFER 8193
 #define RESPONSE_ROW_MAX_LENGTH 8193
@@ -52,10 +52,10 @@
 #define UI_MESSAGES_OUTPUT stderr
 #define UI_MESSAGES_MAX_LENGTH 60
 
-#define SERVER_PATH "/smlgr/api/inverter/%ld/payload"
+#define SERVER_PATH "/smlgr/api/v1/inverter/payload"
 #define SERVER_QUERY_STRING ""
 #define SERVER_METHOD "POST"
 #define SERVER_CONTENT_TYPE "application/json"
-#define SERVER_DATA "{\"timestamp\":%lld,\"token\":\"%s\",\"data\":{\"ac_power\":%d,\"ac_voltage\":%d,\"ac_current\":%d,\"ac_frequency\":%d,\"dc1_voltage\":%d,\"dc1_current\":%d,\"dc2_voltage\":%d,\"dc2_current\":%d,\"temperature\":%d,\"production\":%d}}"
+#define SERVER_DATA "{\"inverter_name\":\"%s\",\"timestamp\":%lld,\"token\":\"%s\",\"data\":{\"ac_power\":%d,\"ac_voltage\":%d,\"ac_current\":%d,\"ac_frequency\":%d,\"dc1_voltage\":%d,\"dc1_current\":%d,\"dc2_voltage\":%d,\"dc2_current\":%d,\"temperature\":%d,\"production\":%d}}"
 
 #endif

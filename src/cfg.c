@@ -71,7 +71,10 @@ void cfg_init() {
     strcpy(conf->server_addr, DEFAULT_SERVER_ADDR);
 
     conf->server_port = DEFAULT_SERVER_PORT;
-    conf->server_inv_id = DEFAULT_SERVER_INVERTER_ID;
+
+    ln = strlen(DEFAULT_SERVER_INVERTER_NAME) + 1;
+    conf->server_inv_name = (char *) calloc(sizeof(char), ln);
+    strcpy(conf->server_inv_name, DEFAULT_SERVER_INVERTER_NAME);
 
     ln = strlen(DEFAULT_SERVER_INVERTER_TOKEN) + 1;
     conf->server_inv_token = (char *) calloc(sizeof(char), ln);
@@ -98,7 +101,7 @@ void cfg_print() {
     ui_message(UI_INFO, "CFG", "lgr-interval = %d", conf->lgr_interval);
     ui_message(UI_INFO, "CFG", "server-addr = %s", conf->server_addr);
     ui_message(UI_INFO, "CFG", "server-port = %d", conf->server_port);
-    ui_message(UI_INFO, "CFG", "server-inv-id = %ld", conf->server_inv_id);
+    ui_message(UI_INFO, "CFG", "server-inv-name = %ld", conf->server_inv_name);
     ui_message(UI_INFO, "CFG", "server-inv-token = %s", conf->server_inv_token);
     ui_message(UI_INFO, "CFG", "queue-size = %d", conf->queue_size);
 }
@@ -113,6 +116,7 @@ void cfg_free() {
     free(conf->inv_tcp_addr);
     free(conf->inv_serial_port);
     free(conf->server_addr);
+    free(conf->server_inv_name);
     free(conf->server_inv_token);
 
     free(conf);
@@ -130,6 +134,7 @@ int cfg_parse(int argc, char **argv) {
     size_t ln;
     int conf_file = 0;
     char *config_file;
+    char *endptr;
 
     static struct option long_options[] = {
             {"config",           required_argument, 0, 'c'},
@@ -149,10 +154,10 @@ int cfg_parse(int argc, char **argv) {
             {"lgr-interval",     required_argument, 0, 'i'},
             {"server-addr",      required_argument, 0, 's'},
             {"server-port",      required_argument, 0, 'r'},
-            {"server-inv-id",    required_argument, 0, 'u'},
+            {"server-inv-name",  required_argument, 0, 'u'},
             {"server-inv-token", required_argument, 0, 't'},
             {"queue-size",       required_argument, 0, 'Q'},
-            {0,                  0,                 0, 0}
+            {0, 0,                                  0, 0}
     };
 
     config_file = (char *) malloc(sizeof(char));
@@ -198,11 +203,11 @@ int cfg_parse(int argc, char **argv) {
         }
 
         if (c == 'd') {
-            conf->debug_level = atoi(optarg);
+            conf->debug_level = (int) strtol(optarg, &endptr, 10);
         }
 
         if (c == 'l') {
-            conf->log_file_level = atoi(optarg);
+            conf->log_file_level = (int) strtol(optarg, &endptr, 10);
         }
 
         if (c == 'k') {
@@ -212,7 +217,7 @@ int cfg_parse(int argc, char **argv) {
         }
 
         if (c == 'm') {
-            conf->inv_model = atoi(optarg);
+            conf->inv_model = (int) strtol(optarg, &endptr, 10);
         }
 
         if (c == 'a') {
@@ -222,7 +227,7 @@ int cfg_parse(int argc, char **argv) {
         }
 
         if (c == 'p') {
-            conf->inv_tcp_port = (uint16_t) atoi(optarg);
+            conf->inv_tcp_port = (uint16_t) strtol(optarg, &endptr, 10);
         }
 
         if (c == 'e') {
@@ -232,15 +237,15 @@ int cfg_parse(int argc, char **argv) {
         }
 
         if (c == 'b') {
-            conf->inv_serial_speed = atoi(optarg);
+            conf->inv_serial_speed = (int) strtol(optarg, &endptr, 10);
         }
 
         if (c == 'n') {
-            conf->inv_num = (unsigned int) atoi(optarg);
+            conf->inv_num = (unsigned int) strtol(optarg, &endptr, 10);
         }
 
         if (c == 'i') {
-            conf->lgr_interval = atoi(optarg);
+            conf->lgr_interval = (int) strtol(optarg, &endptr, 10);
         }
 
         if (c == 's') {
@@ -250,11 +255,13 @@ int cfg_parse(int argc, char **argv) {
         }
 
         if (c == 'r') {
-            conf->server_port = (uint16_t) atoi(optarg);
+            conf->server_port = (uint16_t) strtol(optarg, &endptr, 10);
         }
 
-        if (c == 'r') {
-            conf->server_inv_id = atol(optarg);
+        if (c == 'u') {
+            ln = strlen(optarg) + 1;
+            conf->server_inv_name = (char *) realloc((void *) conf->server_inv_name, sizeof(char) * ln);
+            strcpy(conf->server_inv_name, optarg);
         }
 
         if (c == 't') {
@@ -264,7 +271,7 @@ int cfg_parse(int argc, char **argv) {
         }
 
         if (c == 'Q') {
-            conf->queue_size = atoi(optarg);
+            conf->queue_size = (int) strtol(optarg, &endptr, 10);
         }
     }
 
@@ -290,6 +297,7 @@ int cfg_file_parse(char *config_file) {
     char value[80];
     size_t ln;
     int linecount = 0;
+    char *endptr;
 
     fd = fopen(config_file, "r");
 
@@ -311,13 +319,13 @@ int cfg_file_parse(char *config_file) {
             ui_message(UI_DEBUG, "CFG-FILE", "Param: %s - Value: %s", param, value);
 
             if (strcmp(param, "debug-level") == 0) {
-                conf->debug_level = atoi(value);
+                conf->debug_level = (int) strtol(optarg, &endptr, 10);
                 ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. debug_level = %d", conf->debug_level);
                 continue;
             }
 
             if (strcmp(param, "log-file-level") == 0) {
-                conf->log_file_level = atoi(value);
+                conf->log_file_level = (int) strtol(optarg, &endptr, 10);
                 ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. log_file_level = %d", conf->log_file_level);
                 continue;
             }
@@ -331,7 +339,7 @@ int cfg_file_parse(char *config_file) {
             }
 
             if (strcmp(param, "inv-model") == 0) {
-                conf->inv_model = atoi(value);
+                conf->inv_model = (int) strtol(optarg, &endptr, 10);
                 ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. inv_model = %d", conf->inv_model);
                 continue;
             }
@@ -345,7 +353,7 @@ int cfg_file_parse(char *config_file) {
             }
 
             if (strcmp(param, "inv-tcp-port") == 0) {
-                conf->inv_tcp_port = (uint16_t) atoi(value);
+                conf->inv_tcp_port = (uint16_t) strtol(optarg, &endptr, 10);
                 ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. inv_tcp_port = %d", conf->inv_tcp_port);
                 continue;
             }
@@ -359,20 +367,20 @@ int cfg_file_parse(char *config_file) {
             }
 
             if (strcmp(param, "inv-serial-speed") == 0) {
-                conf->inv_serial_speed = atoi(value);
+                conf->inv_serial_speed = (int) strtol(optarg, &endptr, 10);
                 ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. inv_serial_speed = %d",
                            conf->inv_serial_speed);
                 continue;
             }
 
             if (strcmp(param, "inv-num") == 0) {
-                conf->inv_num = (unsigned int) atoi(value);
+                conf->inv_num = (unsigned int) strtol(optarg, &endptr, 10);
                 ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. inv_num = %d", conf->inv_num);
                 continue;
             }
 
             if (strcmp(param, "lgr-interval") == 0) {
-                conf->lgr_interval = atoi(value);
+                conf->lgr_interval = (int) strtol(optarg, &endptr, 10);
                 ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. lgr_interval = %d", conf->lgr_interval);
                 continue;
             }
@@ -386,14 +394,16 @@ int cfg_file_parse(char *config_file) {
             }
 
             if (strcmp(param, "server-port") == 0) {
-                conf->server_port = (uint16_t) atoi(value);
+                conf->server_port = (uint16_t) strtol(optarg, &endptr, 10);
                 ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. server_port = %d", conf->server_port);
                 continue;
             }
 
-            if (strcmp(param, "server-inv-id") == 0) {
-                conf->server_inv_id = atoi(value);
-                ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. server_inv_id = %d", conf->server_inv_id);
+            if (strcmp(param, "server-inv-name") == 0) {
+                ln = strlen(value) + 1;
+                conf->server_inv_name = (char *) realloc((void *) conf->server_inv_name, sizeof(char) * ln);
+                strcpy(conf->server_inv_name, value);
+                ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. server_inv_name = %s", conf->server_inv_name);
                 continue;
             }
 
@@ -407,7 +417,7 @@ int cfg_file_parse(char *config_file) {
             }
 
             if (strcmp(param, "queue-size") == 0) {
-                conf->queue_size = atoi(value);
+                conf->queue_size = (int) strtol(optarg, &endptr, 10);
                 ui_message(UI_DEBUG, "CFG-FILE", "Configuration updated. queue_size = %d", conf->queue_size);
                 continue;
             }

@@ -22,6 +22,7 @@
 
 #include <malloc.h>
 #include <time.h>
+#include <string.h>
 
 #include "inverter/inverter.h"
 #include "http/response.h"
@@ -45,7 +46,7 @@ int server_send_ts(invdata *data, time_t timestamp) {
     char server_data[SOCKET_TCP_BUFFER];
     int code;
 
-    sprintf(server_url, SERVER_PATH, conf->server_inv_id);
+    strcpy(server_url, SERVER_PATH);
 
     sprintf(server_data, SERVER_DATA,
             (long long) timestamp,
